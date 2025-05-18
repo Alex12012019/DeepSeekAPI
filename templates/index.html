@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeepSeek Chat</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2>Диалоги</h2>
+                <button id="new-chat-btn">+ Новый</button>
+            </div>
+            <div class="conversation-list" id="conversation-list"></div>
+        </aside>
+
+        <main class="main-content">
+            <div class="chat-container" id="chat-container"></div>
+            
+            <div class="input-area">
+                <textarea id="user-input" placeholder="Введите сообщение..."></textarea>
+                <button id="send-button">Отправить</button>
+            </div>
+        </main>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/marked-config.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
