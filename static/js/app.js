@@ -1,6 +1,6 @@
 class ChatApp {
     constructor() {
-        this.currentChat = null;
+        this.currentChat = this.createNewChat();
         this.autoSaveInterval = null;
         this.initElements();
         this.bindEvents();
@@ -8,6 +8,15 @@ class ChatApp {
         this.startAutoSave();
     }
 
+    createNewChat() {
+        return {
+            id: 'tmp-' + Date.now(), // Временный ID для новых чатов
+            name: "Новый чат",
+            messages: [],
+            isNew: true
+        };
+    }
+    
     initElements() {
         this.elements = {
             chatContainer: document.getElementById('chat-container'),
@@ -15,7 +24,6 @@ class ChatApp {
             sendButton: document.getElementById('send-button'),
             conversationList: document.getElementById('conversation-list'),
             newChatBtn: document.getElementById('new-chat'),
-            //saveChatBtn: document.getElementById('save-chat')
         };
     }
 
@@ -34,6 +42,10 @@ class ChatApp {
 
         // Новый чат
         this.elements.newChatBtn.addEventListener('click', () => this.newChat());
+
+        this.elements.saveButton = document.getElementById('save-chat');
+        this.elements.saveButton.addEventListener('click', () => this.saveChat());
+
     }
 
     handleDocumentClick(e) {
@@ -64,10 +76,10 @@ class ChatApp {
         }
 
         // Сохранение чата
-        if (e.target.closest('.SaveChat')) {
-                this.saveChat(false);
-            return;
-        }
+        //if (e.target.closest('#save-chat') || e.target.id === 'save-chat') {
+        //    this.saveChat();
+        //    return;
+        //}
 
     }
 
@@ -199,28 +211,6 @@ class ChatApp {
         });
     }
 
-    async loadChat(chatId) {
-        try {
-            const response = await fetch(`/api/load_conversation/${chatId}`);
-            if (!response.ok) throw new Error('Failed to load chat');
-            
-            const chatData = await response.json();
-            
-            this.currentChat = {
-                id: chatId,
-                messages: chatData.messages
-            };
-
-            this.elements.chatContainer.innerHTML = '';
-            chatData.messages.forEach(msg => {
-                this.addMessage(msg.role, msg.content);
-            });
-        } catch (error) {
-            console.error('Load chat error:', error);
-            alert('Не удалось загрузить чат');
-        }
-    }
-
     async deleteChat(chatId) {
         if (!confirm('Удалить этот диалог?')) return;
         
@@ -262,13 +252,6 @@ class ChatApp {
         }
     }
 
-    newChat() {
-        if (!this.currentChat || confirm('Начать новый диалог? Текущий чат будет закрыт.')) {
-            this.currentChat = null;
-            this.elements.chatContainer.innerHTML = '';
-        }
-    }
-
     startAutoSave() {
         // Автосохранение каждые 30 секунд
         this.autoSaveInterval = setInterval(() => {
@@ -294,41 +277,88 @@ class ChatApp {
     }
 
     async saveChat(showAlert = true) {
-        this.showStatusMessage('Автосохранение...', 2000);
-
-        if (!this.currentChat?.messages || this.currentChat.messages.length === 0) {
-            if (showAlert) alert('Нет сообщений для сохранения');
-            return;
-        }
-
         try {
-            const isNewChat = !this.currentChat.id;
+            // Проверка на пустые сообщения
+            if (!this.currentChat.messages?.length) {
+                if (showAlert) alert('Нет сообщений для сохранения');
+                return;
+            }
+
+            // Запрос имени для нового чата
+            if (this.currentChat.isNew) {
+                const newName = prompt("Введите название чата:", this.currentChat.name);
+                if (!newName) return; // Отмена сохранения
+                this.currentChat.name = newName;
+            }
+
+            // Отправка на сервер
             const response = await fetch('/api/save_conversation', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     messages: this.currentChat.messages,
-                    filename: this.currentChat.id, // Для перезаписи существующего
+                    filename: this.currentChat.isNew ? null : this.currentChat.id,
                     name: this.currentChat.name
                 })
             });
 
             const data = await response.json();
-            this.currentChat.id = data.filename;
-            this.currentChat.name = data.name;
             
-            if (showAlert) {
-                alert(isNewChat ? 'Диалог сохранён' : 'Диалог обновлён');
-            }
-            this.loadConversations();
-        } catch (error) {
-                    alert("SaveChat error");
+            // Обновляем состояние чата (важно ДО показа alert)
+            this.currentChat = {
+                id: data.filename,
+                name: data.name,
+                messages: this.currentChat.messages,
+                isNew: false
+            };
 
-            console.error('Save error:', error);
-            if (showAlert) alert('Ошибка сохранения');
+            // Показываем уведомление ТОЛЬКО если явно запрошено
+            if (showAlert) {
+                alert(this.currentChat.isNew ? "Чат сохранён" : "Чат обновлён");
+            }
+
+            this.loadConversations();
+
+        } catch (error) {
+            console.error('Ошибка сохранения:', error);
+            if (showAlert) alert('Ошибка сохранения: ' + error.message);
         }
     }
-    
+
+    newChat() {
+        if (!this.currentChat.messages.length || confirm('Начать новый чат? Несохранённые изменения будут потеряны.')) {
+            this.currentChat = this.createNewChat();
+            this.elements.chatContainer.innerHTML = '';
+        }
+    }
+
+    async loadChat(chatId) {
+        try {
+            const response = await fetch(`/api/load_conversation/${chatId}`);
+            const data = await response.json();
+            
+            this.currentChat = {
+                id: chatId,
+                name: data.name || "Без названия",
+                messages: data.messages || [],
+                isNew: false
+            };
+            
+            this.renderMessages();
+            
+        } catch (error) {
+            console.error('Ошибка загрузки:', error);
+            alert('Не удалось загрузить чат');
+        }
+    }
+
+    renderMessages() {
+        this.elements.chatContainer.innerHTML = '';
+        this.currentChat.messages.forEach(msg => {
+            this.addMessage(msg.role, msg.content);
+        });
+    }
+
 }
 
 

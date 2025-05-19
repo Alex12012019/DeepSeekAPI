@@ -169,35 +169,38 @@ def save_conversation():
     try:
         data = request.json
         messages = data.get('messages', [])
-        filename = data.get('filename')  # Новый параметр для существующих чатов
+        filename = data.get('filename')  # Может быть None для нового чата
         custom_name = data.get('name', '').strip()
 
         if not messages:
-            return jsonify({'error': 'Empty conversation'}), 400
+            return jsonify({'error': 'Пустой диалог'}), 400
 
-        # Если файл указан - перезаписываем, иначе создаём новый
-        if filename and os.path.exists(os.path.join(UPLOAD_FOLDER, filename)):
-            filepath = os.path.join(UPLOAD_FOLDER, filename)
+        # Генерируем имя, если не указано
+        if not custom_name:
+            first_msg = next((m for m in messages if m.get('role') == 'user'), None)
+            custom_name = first_msg.get('content', 'Новый чат')[:30] if first_msg else 'Новый чат'
+
+        # Если файл существует - перезаписываем
+        if filename and os.path.exists(os.path.join(app.config['UPLOAD_FOLDER'], filename)):
+            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             with open(filepath, 'r+', encoding='utf-8') as f:
-                data = json.load(f)
-                data['messages'] = messages
-                if custom_name:
-                    data['meta']['name'] = custom_name
+                chat_data = json.load(f)
+                chat_data['messages'] = messages
+                chat_data['meta']['name'] = custom_name
+                chat_data['meta']['updated'] = datetime.datetime.now().isoformat()
                 f.seek(0)
-                json.dump(data, f, indent=2, ensure_ascii=False)
+                json.dump(chat_data, f, indent=2, ensure_ascii=False)
                 f.truncate()
-            
-            name = data['meta']['name']
         else:
+            # Создаём новый файл
             timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-            name = sanitize_filename(custom_name) if custom_name else generate_chat_name(messages)
-            filename = f"conv_{timestamp}_{name}.json"
-            filepath = os.path.join(UPLOAD_FOLDER, filename)
+            filename = f"conv_{timestamp}_{sanitize_filename(custom_name)}.json"
+            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             
             with open(filepath, 'w', encoding='utf-8') as f:
                 json.dump({
                     'meta': {
-                        'name': name,
+                        'name': custom_name,
                         'created': datetime.datetime.now().isoformat(),
                         'updated': datetime.datetime.now().isoformat()
                     },
@@ -207,11 +210,12 @@ def save_conversation():
         return jsonify({
             'status': 'success',
             'filename': filename,
-            'name': name
+            'name': custom_name
         })
+        
     except Exception as e:
         return jsonify({'error': str(e)}), 500
-    
+        
 @app.route('/api/delete_chat/<filename>', methods=['POST'])
 def delete_chat(filename):
     try:
