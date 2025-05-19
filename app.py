@@ -33,6 +33,7 @@ config = load_config()
 app = Flask(__name__)
 app.secret_key = config['app']['secret_key']
 UPLOAD_FOLDER = config['app']['upload_folder']
+
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
@@ -60,27 +61,40 @@ def home():
 
 @app.route('/api/get_conversations')
 def get_conversations():
+    conversations = []
+    upload_folder = os.path.join(os.path.dirname(__file__), app.config['UPLOAD_FOLDER'])
+    
     try:
-        conversations = []
-        for filename in os.listdir(UPLOAD_FOLDER):
+        for filename in os.listdir(upload_folder):
             if filename.endswith('.json'):
-                filepath = os.path.join(UPLOAD_FOLDER, filename)
+                filepath = os.path.join(upload_folder, filename)
                 try:
                     with open(filepath, 'r', encoding='utf-8') as f:
                         data = json.load(f)
+                    
+                    # Получаем метаданные или генерируем имя
+                    meta = data.get('meta', {})
+                    name = meta.get('name', generate_chat_name(data.get('messages', [])))
+                    
+                    # Получаем правильное время создания
+                    created_time = os.path.getmtime(filepath)
+                    
                     conversations.append({
                         'filename': filename,
-                        'name': data.get('meta', {}).get('name', generate_chat_name(data.get('messages', []))),
-                        'date': os.path.getmtime(filepath) * 1000  # JavaScript timestamp
+                        'name': name,
+                        'date': created_time * 1000  # JavaScript timestamp
                     })
+                    
                 except Exception as e:
-                    logger.error(f"Ошибка загрузки {filename}: {str(e)}")
-        
+                    logger.error(f"Error loading {filename}: {str(e)}")
+                    continue
+
+        # Сортировка по дате (новые сверху)
         conversations.sort(key=lambda x: x['date'], reverse=True)
-        logger.debug(f"Возвращено {len(conversations)} диалогов")
         return jsonify(conversations)
+        
     except Exception as e:
-        logger.error(f"Ошибка в get_conversations: {str(e)}")
+        logger.error(f"Error in get_conversations: {str(e)}")
         return jsonify({'error': str(e)}), 500
 
 @app.route('/api/load_conversation/<filename>')
@@ -249,6 +263,14 @@ def rename_chat(filename):
     except Exception as e:
         logger.error(f"Ошибка переименования {filename}: {str(e)}")
         return jsonify({'error': str(e)}), 500
+
+@app.route('/api/debug')
+def debug():
+    return jsonify({
+        'cwd': os.getcwd(),
+        'upload_folder': app.config['UPLOAD_FOLDER'],
+        'files': os.listdir(os.path.join(os.path.dirname(__file__), app.config['UPLOAD_FOLDER']))
+    })
 
 if __name__ == '__main__':
     logger.info("Запуск приложения")

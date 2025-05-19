@@ -14,7 +14,7 @@ class ChatApp {
             userInput: document.getElementById('user-input'),
             sendButton: document.getElementById('send-button'),
             conversationList: document.getElementById('conversation-list'),
-            newChatBtn: document.getElementById('new-chat-btn')
+            newChatBtn: document.getElementById('new-chat')
         };
     }
 
@@ -142,17 +142,19 @@ class ChatApp {
     async loadConversations() {
         try {
             const response = await fetch('/api/get_conversations');
-            if (!response.ok) throw new Error('Ошибка загрузки');
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
             
-            const conversations = await response.json();
-            this.renderConversationList(conversations);
+            const data = await response.json();
+            console.log("Loaded conversations:", data); // Для отладки
+            
+            if (data.error) {
+                throw new Error(data.error);
+            }
+            
+            this.renderConversationList(data);
         } catch (error) {
-            console.error('Ошибка:', error);
-            this.elements.conversationList.innerHTML = `
-                <div class="error-loading">
-                    Ошибка загрузки диалогов
-                </div>
-            `;
+            console.error("Load conversations error:", error);
+            this.showError("Ошибка загрузки диалогов");
         }
     }
 
@@ -318,7 +320,12 @@ class ChatApp {
     
 }
 
+
 // Инициализация приложения
 document.addEventListener('DOMContentLoaded', () => {
-    window.app = new ChatApp();
+    try {
+        window.app = new ChatApp();
+    } catch (e) {
+        alert("Ошибка при создании ChatApp: " + e.message);
+    }
 });

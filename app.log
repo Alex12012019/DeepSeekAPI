@@ -462,3 +462,235 @@ werkzeug.exceptions.UnsupportedMediaType: 415 Unsupported Media Type: Did not at
 2025-05-19 10:21:28,465 - INFO - 127.0.0.1 - - [19/May/2025 10:21:28] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
 2025-05-19 10:21:28,465 - INFO - 127.0.0.1 - - [19/May/2025 10:21:28] "[36mGET /static/js/app.js HTTP/1.1[0m" 304 -
 2025-05-19 10:21:28,466 - INFO - 127.0.0.1 - - [19/May/2025 10:21:28] "[36mGET /static/js/marked-config.js HTTP/1.1[0m" 304 -
+2025-05-19 10:33:44,666 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-05-19 10:33:44,666 - INFO - [33mPress CTRL+C to quit[0m
+2025-05-19 10:33:46,916 - DEBUG - Запрос главной страницы
+2025-05-19 10:33:46,925 - INFO - 127.0.0.1 - - [19/May/2025 10:33:46] "GET / HTTP/1.1" 200 -
+2025-05-19 10:33:47,021 - INFO - 127.0.0.1 - - [19/May/2025 10:33:47] "[36mGET /static/js/marked-config.js HTTP/1.1[0m" 304 -
+2025-05-19 10:33:47,022 - INFO - 127.0.0.1 - - [19/May/2025 10:33:47] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2025-05-19 10:33:47,022 - INFO - 127.0.0.1 - - [19/May/2025 10:33:47] "GET /static/js/app.js HTTP/1.1" 200 -
+2025-05-19 10:33:58,740 - INFO - 127.0.0.1 - - [19/May/2025 10:33:58] "GET /api/get_conversations HTTP/1.1" 200 -
+2025-05-19 10:35:14,072 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-05-19 10:35:14,073 - INFO - [33mPress CTRL+C to quit[0m
+2025-05-19 10:38:45,290 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-05-19 10:38:45,291 - INFO - [33mPress CTRL+C to quit[0m
+2025-05-19 10:39:38,591 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-05-19 10:39:38,592 - INFO - [33mPress CTRL+C to quit[0m
+2025-05-19 10:41:31,869 - DEBUG - Запрос главной страницы
+2025-05-19 10:41:31,878 - INFO - 127.0.0.1 - - [19/May/2025 10:41:31] "GET / HTTP/1.1" 200 -
+2025-05-19 10:41:31,906 - INFO - 127.0.0.1 - - [19/May/2025 10:41:31] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2025-05-19 10:41:31,907 - INFO - 127.0.0.1 - - [19/May/2025 10:41:31] "[36mGET /static/js/app.js HTTP/1.1[0m" 304 -
+2025-05-19 10:41:31,907 - INFO - 127.0.0.1 - - [19/May/2025 10:41:31] "[36mGET /static/js/marked-config.js HTTP/1.1[0m" 304 -
+2025-05-19 10:42:39,093 - INFO - 127.0.0.1 - - [19/May/2025 10:42:39] "GET /api/get_conversations HTTP/1.1" 200 -
+2025-05-19 10:57:59,640 - DEBUG - Запрос главной страницы
+2025-05-19 10:57:59,642 - INFO - 127.0.0.1 - - [19/May/2025 10:57:59] "GET / HTTP/1.1" 200 -
+2025-05-19 10:57:59,729 - INFO - 127.0.0.1 - - [19/May/2025 10:57:59] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2025-05-19 10:57:59,734 - INFO - 127.0.0.1 - - [19/May/2025 10:57:59] "[36mGET /static/js/app.js HTTP/1.1[0m" 304 -
+2025-05-19 10:57:59,735 - INFO - 127.0.0.1 - - [19/May/2025 10:57:59] "[36mGET /static/js/marked-config.js HTTP/1.1[0m" 304 -
+2025-05-19 10:59:26,080 - DEBUG - Запрос главной страницы
+2025-05-19 10:59:44,453 - INFO - 127.0.0.1 - - [19/May/2025 10:59:44] "GET / HTTP/1.1" 200 -
+2025-05-19 10:59:44,475 - INFO - 127.0.0.1 - - [19/May/2025 10:59:44] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2025-05-19 10:59:44,478 - INFO - 127.0.0.1 - - [19/May/2025 10:59:44] "[36mGET /static/js/marked-config.js HTTP/1.1[0m" 304 -
+2025-05-19 10:59:44,485 - INFO - 127.0.0.1 - - [19/May/2025 10:59:44] "[36mGET /static/js/app.js HTTP/1.1[0m" 304 -
+2025-05-19 11:00:55,092 - DEBUG - Запрос главной страницы
+2025-05-19 11:00:55,095 - INFO - 127.0.0.1 - - [19/May/2025 11:00:55] "GET / HTTP/1.1" 200 -
+2025-05-19 11:00:55,114 - INFO - 127.0.0.1 - - [19/May/2025 11:00:55] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2025-05-19 11:00:55,118 - INFO - 127.0.0.1 - - [19/May/2025 11:00:55] "[36mGET /static/js/marked-config.js HTTP/1.1[0m" 304 -
+2025-05-19 11:00:55,121 - INFO - 127.0.0.1 - - [19/May/2025 11:00:55] "[36mGET /static/js/app.js HTTP/1.1[0m" 304 -
+2025-05-19 11:00:57,726 - DEBUG - Запрос главной страницы
+2025-05-19 11:00:57,727 - INFO - 127.0.0.1 - - [19/May/2025 11:00:57] "GET / HTTP/1.1" 200 -
+2025-05-19 11:00:57,745 - INFO - 127.0.0.1 - - [19/May/2025 11:00:57] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2025-05-19 11:00:57,750 - INFO - 127.0.0.1 - - [19/May/2025 11:00:57] "[36mGET /static/js/marked-config.js HTTP/1.1[0m" 304 -
+2025-05-19 11:00:57,754 - INFO - 127.0.0.1 - - [19/May/2025 11:00:57] "[36mGET /static/js/app.js HTTP/1.1[0m" 304 -
+2025-05-19 11:01:03,632 - DEBUG - Запрос главной страницы
+2025-05-19 11:01:03,633 - INFO - 127.0.0.1 - - [19/May/2025 11:01:03] "GET / HTTP/1.1" 200 -
+2025-05-19 11:01:03,721 - INFO - 127.0.0.1 - - [19/May/2025 11:01:03] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2025-05-19 11:01:03,724 - INFO - 127.0.0.1 - - [19/May/2025 11:01:03] "[36mGET /static/js/marked-config.js HTTP/1.1[0m" 304 -
+2025-05-19 11:01:03,726 - INFO - 127.0.0.1 - - [19/May/2025 11:01:03] "[36mGET /static/js/app.js HTTP/1.1[0m" 304 -
+2025-05-19 11:01:32,322 - DEBUG - Получен запрос: {'message': 'рш!', 'messages': []}
+2025-05-19 11:01:32,323 - DEBUG - Отправка в Deepseek: [{'role': 'user', 'content': 'рш!'}]
+2025-05-19 11:01:32,582 - DEBUG - Request options: {'method': 'post', 'url': '/chat/completions', 'files': None, 'idempotency_key': 'stainless-python-retry-89b5fae6-15d4-4c82-8733-39b088cb28d2', 'json_data': {'messages': [{'role': 'user', 'content': 'рш!'}], 'model': 'deepseek-chat', 'temperature': 0.7}}
+2025-05-19 11:01:32,585 - DEBUG - Sending HTTP Request: POST https://hubai.loe.gg/v1/chat/completions
+2025-05-19 11:01:32,586 - DEBUG - connect_tcp.started host='hubai.loe.gg' port=443 local_address=None timeout=5.0 socket_options=None
+2025-05-19 11:01:33,801 - DEBUG - connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7f22b7fc85b0>
+2025-05-19 11:01:33,802 - DEBUG - start_tls.started ssl_context=<ssl.SSLContext object at 0x7f22c65fc040> server_hostname='hubai.loe.gg' timeout=5.0
+2025-05-19 11:01:33,900 - DEBUG - start_tls.complete return_value=<httpcore._backends.sync.SyncStream object at 0x7f22b7fc8640>
+2025-05-19 11:01:33,901 - DEBUG - send_request_headers.started request=<Request [b'POST']>
+2025-05-19 11:01:33,902 - DEBUG - send_request_headers.complete
+2025-05-19 11:01:33,902 - DEBUG - send_request_body.started request=<Request [b'POST']>
+2025-05-19 11:01:33,902 - DEBUG - send_request_body.complete
+2025-05-19 11:01:33,903 - DEBUG - receive_response_headers.started request=<Request [b'POST']>
+2025-05-19 11:02:15,210 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Date', b'Mon, 19 May 2025 08:02:17 GMT'), (b'Content-Type', b'application/json'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'Cf-Ray', b'94221137181dd8cc-AMS'), (b'Server', b'cloudflare'), (b'Content-Encoding', b'zstd'), (b'X-Litellm-Call-Id', b'3fb2feda-576c-4224-808a-d707a58cbdb1'), (b'X-Litellm-Model-Id', b'3c35e2af-773f-4335-91e5-180b8804a33a'), (b'X-Litellm-Model-Api-Base', b'https://llm.chutes.ai/v1'), (b'X-Litellm-Version', b'1.68.0'), (b'X-Litellm-Response-Cost', b'0.000117856'), (b'X-Litellm-Key-Max-Budget', b'11.0'), (b'X-Litellm-Key-Spend', b'0.07366408'), (b'X-Litellm-Response-Duration-Ms', b'1430.325'), (b'X-Litellm-Overhead-Duration-Ms', b'3.306'), (b'Llm_provider-Server', b'nginx'), (b'Llm_provider-Date', b'Mon, 19 May 2025 08:02:16 GMT'), (b'Llm_provider-Content-Type', b'application/json'), (b'Llm_provider-Vary', b'Accept-Encoding'), (b'Llm_provider-X-Chutes-Invocationid', b'e1b5c1fb-cc93-4164-9dc7-a46796e75cca'), (b'Llm_provider-Access-Control-Allow-Origin', b'*'), (b'Llm_provider-Access-Control-Allow-Methods', b'GET, POST, OPTIONS, PUT, DELETE, PATCH'), (b'Llm_provider-Content-Encoding', b'gzip'), (b'Llm_provider-Via', b'1.1 google'), (b'Llm_provider-Alt-Svc', b'clear'), (b'Llm_provider-Transfer-Encoding', b'chunked'), (b'X-Litellm-Model-Group', b'deepseek-chat'), (b'X-Litellm-Attempted-Retries', b'2'), (b'X-Litellm-Max-Retries', b'2'), (b'X-Litellm-Attempted-Fallbacks', b'0'), (b'Cf-Cache-Status', b'DYNAMIC'), (b'Report-To', b'{"endpoints":[{"url":"https:\\/\\/a.nel.cloudflare.com\\/report\\/v4?s=PkDERONI8gj%2Bg3YaIf1KqEtP%2FOFORMQt4xjeuJse4CezDUHg4btIh51f1diLN10wEk%2BT7%2BPVxFQHTQ5W2W4Opjy7Awsw4sUyXnZKG%2BYKWKyPoJOpzCRR%2F32pGwg7Wd0%3D"}],"group":"cf-nel","max_age":604800}'), (b'Nel', b'{"success_fraction":0,"report_to":"cf-nel","max_age":604800}'), (b'Strict-Transport-Security', b'max-age=0; preload'), (b'Expect-Ct', b'max-age=86400, enforce'), (b'Referrer-Policy', b'same-origin'), (b'X-Content-Type-Options', b'nosniff'), (b'X-Frame-Options', b'SAMEORIGIN'), (b'X-Xss-Protection', b'1; mode=block'), (b'alt-svc', b'h3=":443"; ma=86400'), (b'server-timing', b'cfL4;desc="?proto=TCP&rtt=79830&min_rtt=79283&rtt_var=22766&sent=8&recv=9&lost=0&retrans=0&sent_bytes=3909&recv_bytes=2295&delivery_rate=61903&cwnd=253&unsent_bytes=0&cid=5971bb2a29c3e2b8&ts=41320&x=0"')])
+2025-05-19 11:02:15,214 - INFO - HTTP Request: POST https://hubai.loe.gg/v1/chat/completions "HTTP/1.1 200 OK"
+2025-05-19 11:02:15,214 - DEBUG - receive_response_body.started request=<Request [b'POST']>
+2025-05-19 11:02:15,216 - DEBUG - receive_response_body.complete
+2025-05-19 11:02:15,217 - DEBUG - response_closed.started
+2025-05-19 11:02:15,217 - DEBUG - response_closed.complete
+2025-05-19 11:02:15,218 - DEBUG - HTTP Response: POST https://hubai.loe.gg/v1/chat/completions "200 OK" Headers({'date': 'Mon, 19 May 2025 08:02:17 GMT', 'content-type': 'application/json', 'transfer-encoding': 'chunked', 'connection': 'keep-alive', 'cf-ray': '94221137181dd8cc-AMS', 'server': 'cloudflare', 'content-encoding': 'zstd', 'x-litellm-call-id': '3fb2feda-576c-4224-808a-d707a58cbdb1', 'x-litellm-model-id': '3c35e2af-773f-4335-91e5-180b8804a33a', 'x-litellm-model-api-base': 'https://llm.chutes.ai/v1', 'x-litellm-version': '1.68.0', 'x-litellm-response-cost': '0.000117856', 'x-litellm-key-max-budget': '11.0', 'x-litellm-key-spend': '0.07366408', 'x-litellm-response-duration-ms': '1430.325', 'x-litellm-overhead-duration-ms': '3.306', 'llm_provider-server': 'nginx', 'llm_provider-date': 'Mon, 19 May 2025 08:02:16 GMT', 'llm_provider-content-type': 'application/json', 'llm_provider-vary': 'Accept-Encoding', 'llm_provider-x-chutes-invocationid': 'e1b5c1fb-cc93-4164-9dc7-a46796e75cca', 'llm_provider-access-control-allow-origin': '*', 'llm_provider-access-control-allow-methods': 'GET, POST, OPTIONS, PUT, DELETE, PATCH', 'llm_provider-content-encoding': 'gzip', 'llm_provider-via': '1.1 google', 'llm_provider-alt-svc': 'clear', 'llm_provider-transfer-encoding': 'chunked', 'x-litellm-model-group': 'deepseek-chat', 'x-litellm-attempted-retries': '2', 'x-litellm-max-retries': '2', 'x-litellm-attempted-fallbacks': '0', 'cf-cache-status': 'DYNAMIC', 'report-to': '{"endpoints":[{"url":"https:\\/\\/a.nel.cloudflare.com\\/report\\/v4?s=PkDERONI8gj%2Bg3YaIf1KqEtP%2FOFORMQt4xjeuJse4CezDUHg4btIh51f1diLN10wEk%2BT7%2BPVxFQHTQ5W2W4Opjy7Awsw4sUyXnZKG%2BYKWKyPoJOpzCRR%2F32pGwg7Wd0%3D"}],"group":"cf-nel","max_age":604800}', 'nel': '{"success_fraction":0,"report_to":"cf-nel","max_age":604800}', 'strict-transport-security': 'max-age=0; preload', 'expect-ct': 'max-age=86400, enforce', 'referrer-policy': 'same-origin', 'x-content-type-options': 'nosniff', 'x-frame-options': 'SAMEORIGIN', 'x-xss-protection': '1; mode=block', 'alt-svc': 'h3=":443"; ma=86400', 'server-timing': 'cfL4;desc="?proto=TCP&rtt=79830&min_rtt=79283&rtt_var=22766&sent=8&recv=9&lost=0&retrans=0&sent_bytes=3909&recv_bytes=2295&delivery_rate=61903&cwnd=253&unsent_bytes=0&cid=5971bb2a29c3e2b8&ts=41320&x=0"'})
+2025-05-19 11:02:15,219 - DEBUG - request_id: None
+2025-05-19 11:02:15,223 - INFO - 127.0.0.1 - - [19/May/2025 11:02:15] "POST /api/send_message HTTP/1.1" 200 -
+2025-05-19 11:10:05,520 - DEBUG - Запрос главной страницы
+2025-05-19 11:14:08,292 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-05-19 11:14:08,292 - INFO - [33mPress CTRL+C to quit[0m
+2025-05-19 11:14:09,817 - DEBUG - Запрос главной страницы
+2025-05-19 11:14:24,433 - INFO - 127.0.0.1 - - [19/May/2025 11:14:24] "GET / HTTP/1.1" 200 -
+2025-05-19 11:14:24,471 - INFO - 127.0.0.1 - - [19/May/2025 11:14:24] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2025-05-19 11:14:24,476 - INFO - 127.0.0.1 - - [19/May/2025 11:14:24] "[36mGET /static/js/marked-config.js HTTP/1.1[0m" 304 -
+2025-05-19 11:14:24,479 - INFO - 127.0.0.1 - - [19/May/2025 11:14:24] "[36mGET /static/js/app.js HTTP/1.1[0m" 304 -
+2025-05-19 11:14:31,640 - INFO - 127.0.0.1 - - [19/May/2025 11:14:31] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2025-05-19 11:14:59,549 - DEBUG - Запрос главной страницы
+2025-05-19 11:14:59,559 - INFO - 127.0.0.1 - - [19/May/2025 11:14:59] "GET / HTTP/1.1" 200 -
+2025-05-19 11:14:59,583 - INFO - 127.0.0.1 - - [19/May/2025 11:14:59] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2025-05-19 11:14:59,586 - INFO - 127.0.0.1 - - [19/May/2025 11:14:59] "[36mGET /static/js/marked-config.js HTTP/1.1[0m" 304 -
+2025-05-19 11:14:59,589 - INFO - 127.0.0.1 - - [19/May/2025 11:14:59] "[36mGET /static/js/app.js HTTP/1.1[0m" 304 -
+2025-05-19 11:16:21,539 - DEBUG - Запрос главной страницы
+2025-05-19 11:16:21,541 - INFO - 127.0.0.1 - - [19/May/2025 11:16:21] "GET / HTTP/1.1" 200 -
+2025-05-19 11:16:21,565 - INFO - 127.0.0.1 - - [19/May/2025 11:16:21] "GET /static/css/main.css HTTP/1.1" 200 -
+2025-05-19 11:16:21,568 - INFO - 127.0.0.1 - - [19/May/2025 11:16:21] "GET /static/js/marked-config.js HTTP/1.1" 200 -
+2025-05-19 11:16:21,572 - INFO - 127.0.0.1 - - [19/May/2025 11:16:21] "GET /static/js/app.js HTTP/1.1" 200 -
+2025-05-19 11:16:22,493 - INFO - 127.0.0.1 - - [19/May/2025 11:16:22] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-05-19 11:18:48,853 - DEBUG - Запрос главной страницы
+2025-05-19 11:18:48,856 - INFO - 127.0.0.1 - - [19/May/2025 11:18:48] "GET / HTTP/1.1" 200 -
+2025-05-19 11:18:48,874 - INFO - 127.0.0.1 - - [19/May/2025 11:18:48] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2025-05-19 11:18:48,877 - INFO - 127.0.0.1 - - [19/May/2025 11:18:48] "[36mGET /static/js/marked-config.js HTTP/1.1[0m" 304 -
+2025-05-19 11:18:48,880 - INFO - 127.0.0.1 - - [19/May/2025 11:18:48] "GET /static/js/app.js HTTP/1.1" 200 -
+2025-05-19 11:18:53,312 - DEBUG - Запрос главной страницы
+2025-05-19 11:18:53,313 - INFO - 127.0.0.1 - - [19/May/2025 11:18:53] "GET / HTTP/1.1" 200 -
+2025-05-19 11:18:53,332 - INFO - 127.0.0.1 - - [19/May/2025 11:18:53] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2025-05-19 11:18:53,336 - INFO - 127.0.0.1 - - [19/May/2025 11:18:53] "[36mGET /static/js/marked-config.js HTTP/1.1[0m" 304 -
+2025-05-19 11:18:53,338 - INFO - 127.0.0.1 - - [19/May/2025 11:18:53] "[36mGET /static/js/app.js HTTP/1.1[0m" 304 -
+2025-05-19 11:18:54,453 - DEBUG - Запрос главной страницы
+2025-05-19 11:18:54,454 - INFO - 127.0.0.1 - - [19/May/2025 11:18:54] "GET / HTTP/1.1" 200 -
+2025-05-19 11:18:54,473 - INFO - 127.0.0.1 - - [19/May/2025 11:18:54] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2025-05-19 11:18:54,477 - INFO - 127.0.0.1 - - [19/May/2025 11:18:54] "[36mGET /static/js/marked-config.js HTTP/1.1[0m" 304 -
+2025-05-19 11:18:54,480 - INFO - 127.0.0.1 - - [19/May/2025 11:18:54] "[36mGET /static/js/app.js HTTP/1.1[0m" 304 -
+2025-05-19 11:19:20,625 - DEBUG - Запрос главной страницы
+2025-05-19 11:19:20,626 - INFO - 127.0.0.1 - - [19/May/2025 11:19:20] "GET / HTTP/1.1" 200 -
+2025-05-19 11:19:20,645 - INFO - 127.0.0.1 - - [19/May/2025 11:19:20] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2025-05-19 11:19:20,649 - INFO - 127.0.0.1 - - [19/May/2025 11:19:20] "[36mGET /static/js/marked-config.js HTTP/1.1[0m" 304 -
+2025-05-19 11:19:20,653 - INFO - 127.0.0.1 - - [19/May/2025 11:19:20] "[36mGET /static/js/app.js HTTP/1.1[0m" 304 -
+2025-05-19 11:19:32,464 - DEBUG - Запрос главной страницы
+2025-05-19 11:19:32,465 - INFO - 127.0.0.1 - - [19/May/2025 11:19:32] "GET / HTTP/1.1" 200 -
+2025-05-19 11:19:32,543 - INFO - 127.0.0.1 - - [19/May/2025 11:19:32] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2025-05-19 11:19:32,549 - INFO - 127.0.0.1 - - [19/May/2025 11:19:32] "[36mGET /static/js/app.js HTTP/1.1[0m" 304 -
+2025-05-19 11:19:32,550 - INFO - 127.0.0.1 - - [19/May/2025 11:19:32] "[36mGET /static/js/marked-config.js HTTP/1.1[0m" 304 -
+2025-05-19 11:19:36,653 - DEBUG - Запрос главной страницы
+2025-05-19 11:19:36,655 - INFO - 127.0.0.1 - - [19/May/2025 11:19:36] "GET / HTTP/1.1" 200 -
+2025-05-19 11:19:36,673 - INFO - 127.0.0.1 - - [19/May/2025 11:19:36] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2025-05-19 11:19:36,676 - INFO - 127.0.0.1 - - [19/May/2025 11:19:36] "[36mGET /static/js/marked-config.js HTTP/1.1[0m" 304 -
+2025-05-19 11:19:36,679 - INFO - 127.0.0.1 - - [19/May/2025 11:19:36] "[36mGET /static/js/app.js HTTP/1.1[0m" 304 -
+2025-05-19 11:19:48,800 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-05-19 11:19:48,801 - INFO - [33mPress CTRL+C to quit[0m
+2025-05-19 11:19:53,461 - DEBUG - Запрос главной страницы
+2025-05-19 11:19:53,469 - INFO - 127.0.0.1 - - [19/May/2025 11:19:53] "GET / HTTP/1.1" 200 -
+2025-05-19 11:19:53,571 - INFO - 127.0.0.1 - - [19/May/2025 11:19:53] "[36mGET /static/js/marked-config.js HTTP/1.1[0m" 304 -
+2025-05-19 11:19:53,572 - INFO - 127.0.0.1 - - [19/May/2025 11:19:53] "[36mGET /static/js/app.js HTTP/1.1[0m" 304 -
+2025-05-19 11:19:53,573 - INFO - 127.0.0.1 - - [19/May/2025 11:19:53] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2025-05-19 11:20:28,766 - DEBUG - Запрос главной страницы
+2025-05-19 11:20:28,770 - INFO - 127.0.0.1 - - [19/May/2025 11:20:28] "GET / HTTP/1.1" 200 -
+2025-05-19 11:20:28,798 - INFO - 127.0.0.1 - - [19/May/2025 11:20:28] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2025-05-19 11:20:28,801 - INFO - 127.0.0.1 - - [19/May/2025 11:20:28] "[36mGET /static/js/marked-config.js HTTP/1.1[0m" 304 -
+2025-05-19 11:20:28,804 - INFO - 127.0.0.1 - - [19/May/2025 11:20:28] "GET /static/js/app.js HTTP/1.1" 200 -
+2025-05-19 11:21:04,981 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-05-19 11:21:04,981 - INFO - [33mPress CTRL+C to quit[0m
+2025-05-19 11:21:07,289 - DEBUG - Запрос главной страницы
+2025-05-19 11:21:07,306 - INFO - 127.0.0.1 - - [19/May/2025 11:21:07] "GET / HTTP/1.1" 200 -
+2025-05-19 11:21:07,405 - INFO - 127.0.0.1 - - [19/May/2025 11:21:07] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2025-05-19 11:21:07,407 - INFO - 127.0.0.1 - - [19/May/2025 11:21:07] "[36mGET /static/js/marked-config.js HTTP/1.1[0m" 304 -
+2025-05-19 11:21:07,411 - INFO - 127.0.0.1 - - [19/May/2025 11:21:07] "GET /static/js/app.js HTTP/1.1" 200 -
+2025-05-19 11:28:27,543 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-05-19 11:28:27,543 - INFO - [33mPress CTRL+C to quit[0m
+2025-05-19 11:28:29,316 - DEBUG - Запрос главной страницы
+2025-05-19 11:28:29,324 - INFO - 127.0.0.1 - - [19/May/2025 11:28:29] "GET / HTTP/1.1" 200 -
+2025-05-19 11:28:29,431 - INFO - 127.0.0.1 - - [19/May/2025 11:28:29] "[36mGET /static/js/marked-config.js HTTP/1.1[0m" 304 -
+2025-05-19 11:28:29,432 - INFO - 127.0.0.1 - - [19/May/2025 11:28:29] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2025-05-19 11:28:29,435 - INFO - 127.0.0.1 - - [19/May/2025 11:28:29] "GET /static/js/app.js HTTP/1.1" 200 -
+2025-05-19 11:29:25,540 - DEBUG - Запрос главной страницы
+2025-05-19 11:29:25,541 - INFO - 127.0.0.1 - - [19/May/2025 11:29:25] "GET / HTTP/1.1" 200 -
+2025-05-19 11:29:25,630 - INFO - 127.0.0.1 - - [19/May/2025 11:29:25] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2025-05-19 11:29:25,636 - INFO - 127.0.0.1 - - [19/May/2025 11:29:25] "[36mGET /static/js/marked-config.js HTTP/1.1[0m" 304 -
+2025-05-19 11:29:25,640 - INFO - 127.0.0.1 - - [19/May/2025 11:29:25] "[36mGET /static/js/app.js HTTP/1.1[0m" 304 -
+2025-05-19 11:48:24,845 - DEBUG - Запрос главной страницы
+2025-05-19 11:48:24,846 - INFO - 127.0.0.1 - - [19/May/2025 11:48:24] "GET / HTTP/1.1" 200 -
+2025-05-19 11:48:24,932 - INFO - 127.0.0.1 - - [19/May/2025 11:48:24] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2025-05-19 11:48:24,938 - INFO - 127.0.0.1 - - [19/May/2025 11:48:24] "[36mGET /static/js/marked-config.js HTTP/1.1[0m" 304 -
+2025-05-19 11:48:24,941 - INFO - 127.0.0.1 - - [19/May/2025 11:48:24] "GET /static/js/app.js HTTP/1.1" 200 -
+2025-05-19 11:49:22,674 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-05-19 11:49:22,674 - INFO - [33mPress CTRL+C to quit[0m
+2025-05-19 11:49:25,536 - DEBUG - Запрос главной страницы
+2025-05-19 11:49:25,545 - INFO - 127.0.0.1 - - [19/May/2025 11:49:25] "GET / HTTP/1.1" 200 -
+2025-05-19 11:49:25,646 - INFO - 127.0.0.1 - - [19/May/2025 11:49:25] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2025-05-19 11:49:25,646 - INFO - 127.0.0.1 - - [19/May/2025 11:49:25] "[36mGET /static/js/marked-config.js HTTP/1.1[0m" 304 -
+2025-05-19 11:49:25,649 - INFO - 127.0.0.1 - - [19/May/2025 11:49:25] "[36mGET /static/js/app.js HTTP/1.1[0m" 304 -
+2025-05-19 11:50:28,068 - DEBUG - Запрос главной страницы
+2025-05-19 11:50:28,071 - INFO - 127.0.0.1 - - [19/May/2025 11:50:28] "GET / HTTP/1.1" 200 -
+2025-05-19 11:50:28,090 - INFO - 127.0.0.1 - - [19/May/2025 11:50:28] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2025-05-19 11:50:28,093 - INFO - 127.0.0.1 - - [19/May/2025 11:50:28] "[36mGET /static/js/marked-config.js HTTP/1.1[0m" 304 -
+2025-05-19 11:50:28,096 - INFO - 127.0.0.1 - - [19/May/2025 11:50:28] "[36mGET /static/js/app.js HTTP/1.1[0m" 304 -
+2025-05-19 11:50:42,782 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-05-19 11:50:42,782 - INFO - [33mPress CTRL+C to quit[0m
+2025-05-19 11:50:44,574 - DEBUG - Запрос главной страницы
+2025-05-19 11:50:44,590 - INFO - 127.0.0.1 - - [19/May/2025 11:50:44] "GET / HTTP/1.1" 200 -
+2025-05-19 11:50:44,615 - INFO - 127.0.0.1 - - [19/May/2025 11:50:44] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2025-05-19 11:50:44,617 - INFO - 127.0.0.1 - - [19/May/2025 11:50:44] "[36mGET /static/js/app.js HTTP/1.1[0m" 304 -
+2025-05-19 11:50:44,618 - INFO - 127.0.0.1 - - [19/May/2025 11:50:44] "[36mGET /static/js/marked-config.js HTTP/1.1[0m" 304 -
+2025-05-19 11:51:54,422 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-05-19 11:51:54,423 - INFO - [33mPress CTRL+C to quit[0m
+2025-05-19 11:51:56,750 - DEBUG - Запрос главной страницы
+2025-05-19 11:51:56,758 - INFO - 127.0.0.1 - - [19/May/2025 11:51:56] "GET / HTTP/1.1" 200 -
+2025-05-19 11:51:56,864 - INFO - 127.0.0.1 - - [19/May/2025 11:51:56] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2025-05-19 11:51:56,865 - INFO - 127.0.0.1 - - [19/May/2025 11:51:56] "[36mGET /static/js/marked-config.js HTTP/1.1[0m" 304 -
+2025-05-19 11:51:56,866 - INFO - 127.0.0.1 - - [19/May/2025 11:51:56] "GET /static/js/app.js HTTP/1.1" 200 -
+2025-05-19 11:52:05,425 - DEBUG - Запрос главной страницы
+2025-05-19 11:52:05,427 - INFO - 127.0.0.1 - - [19/May/2025 11:52:05] "GET / HTTP/1.1" 200 -
+2025-05-19 11:52:05,447 - INFO - 127.0.0.1 - - [19/May/2025 11:52:05] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2025-05-19 11:52:05,451 - INFO - 127.0.0.1 - - [19/May/2025 11:52:05] "[36mGET /static/js/marked-config.js HTTP/1.1[0m" 304 -
+2025-05-19 11:52:05,453 - INFO - 127.0.0.1 - - [19/May/2025 11:52:05] "[36mGET /static/js/app.js HTTP/1.1[0m" 304 -
+2025-05-19 11:53:35,757 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-05-19 11:53:35,757 - INFO - [33mPress CTRL+C to quit[0m
+2025-05-19 11:53:37,962 - DEBUG - Запрос главной страницы
+2025-05-19 11:53:37,976 - INFO - 127.0.0.1 - - [19/May/2025 11:53:37] "GET / HTTP/1.1" 200 -
+2025-05-19 11:53:37,999 - INFO - 127.0.0.1 - - [19/May/2025 11:53:37] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2025-05-19 11:53:38,000 - INFO - 127.0.0.1 - - [19/May/2025 11:53:38] "[36mGET /static/js/marked-config.js HTTP/1.1[0m" 304 -
+2025-05-19 11:53:38,003 - INFO - 127.0.0.1 - - [19/May/2025 11:53:38] "GET /static/js/app.js HTTP/1.1" 200 -
+2025-05-19 11:56:44,026 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-05-19 11:56:44,027 - INFO - [33mPress CTRL+C to quit[0m
+2025-05-19 11:56:46,569 - DEBUG - Запрос главной страницы
+2025-05-19 11:56:46,581 - INFO - 127.0.0.1 - - [19/May/2025 11:56:46] "GET / HTTP/1.1" 200 -
+2025-05-19 11:56:46,641 - INFO - 127.0.0.1 - - [19/May/2025 11:56:46] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2025-05-19 11:56:46,642 - INFO - 127.0.0.1 - - [19/May/2025 11:56:46] "[36mGET /static/js/marked-config.js HTTP/1.1[0m" 304 -
+2025-05-19 11:56:46,644 - INFO - 127.0.0.1 - - [19/May/2025 11:56:46] "GET /static/js/app.js HTTP/1.1" 200 -
+2025-05-19 11:56:53,415 - DEBUG - Запрос главной страницы
+2025-05-19 11:56:53,417 - INFO - 127.0.0.1 - - [19/May/2025 11:56:53] "GET / HTTP/1.1" 200 -
+2025-05-19 11:56:53,438 - INFO - 127.0.0.1 - - [19/May/2025 11:56:53] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2025-05-19 11:56:53,442 - INFO - 127.0.0.1 - - [19/May/2025 11:56:53] "[36mGET /static/js/marked-config.js HTTP/1.1[0m" 304 -
+2025-05-19 11:56:53,445 - INFO - 127.0.0.1 - - [19/May/2025 11:56:53] "[36mGET /static/js/app.js HTTP/1.1[0m" 304 -
+2025-05-19 12:02:32,003 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-05-19 12:02:32,003 - INFO - [33mPress CTRL+C to quit[0m
+2025-05-19 12:02:33,641 - DEBUG - Запрос главной страницы
+2025-05-19 12:02:33,653 - INFO - 127.0.0.1 - - [19/May/2025 12:02:33] "GET / HTTP/1.1" 200 -
+2025-05-19 12:02:33,743 - INFO - 127.0.0.1 - - [19/May/2025 12:02:33] "[36mGET /static/js/marked-config.js HTTP/1.1[0m" 304 -
+2025-05-19 12:02:33,745 - INFO - 127.0.0.1 - - [19/May/2025 12:02:33] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2025-05-19 12:02:33,745 - INFO - 127.0.0.1 - - [19/May/2025 12:02:33] "GET /static/js/app.js HTTP/1.1" 200 -
+2025-05-19 12:02:40,589 - INFO - 127.0.0.1 - - [19/May/2025 12:02:40] "GET /api/get_conversations HTTP/1.1" 200 -
+2025-05-19 12:02:52,148 - DEBUG - Загружен диалог conv_20250518_192704_проанализируй файл index.html....json с 8 сообщениями
+2025-05-19 12:02:52,151 - INFO - 127.0.0.1 - - [19/May/2025 12:02:52] "GET /api/load_conversation/conv_20250518_192704_проанализируй%20файл%20index.html....json HTTP/1.1" 200 -
+2025-05-19 12:02:56,374 - DEBUG - Загружен диалог conv_20250518_124528_проанализируй app.py и index.h....json с 2 сообщениями
+2025-05-19 12:02:56,374 - INFO - 127.0.0.1 - - [19/May/2025 12:02:56] "GET /api/load_conversation/conv_20250518_124528_проанализируй%20app.py%20и%20index.h....json HTTP/1.1" 200 -
+2025-05-19 12:03:03,793 - INFO - 127.0.0.1 - - [19/May/2025 12:03:03] "POST /api/save_conversation HTTP/1.1" 200 -
+2025-05-19 12:03:03,808 - INFO - 127.0.0.1 - - [19/May/2025 12:03:03] "GET /api/get_conversations HTTP/1.1" 200 -
+2025-05-19 12:03:15,126 - INFO - 127.0.0.1 - - [19/May/2025 12:03:15] "POST /api/save_conversation HTTP/1.1" 200 -
