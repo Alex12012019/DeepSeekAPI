@@ -14,7 +14,8 @@ class ChatApp {
             userInput: document.getElementById('user-input'),
             sendButton: document.getElementById('send-button'),
             conversationList: document.getElementById('conversation-list'),
-            newChatBtn: document.getElementById('new-chat')
+            newChatBtn: document.getElementById('new-chat'),
+            //saveChatBtn: document.getElementById('save-chat')
         };
     }
 
@@ -61,6 +62,13 @@ class ChatApp {
                 this.loadChat(item.dataset.id);
             }
         }
+
+        // Сохранение чата
+        if (e.target.closest('.SaveChat')) {
+                this.saveChat(false);
+            return;
+        }
+
     }
 
     async sendMessage() {
@@ -287,6 +295,7 @@ class ChatApp {
 
     async saveChat(showAlert = true) {
         this.showStatusMessage('Автосохранение...', 2000);
+
         if (!this.currentChat?.messages || this.currentChat.messages.length === 0) {
             if (showAlert) alert('Нет сообщений для сохранения');
             return;
@@ -313,6 +322,8 @@ class ChatApp {
             }
             this.loadConversations();
         } catch (error) {
+                    alert("SaveChat error");
+
             console.error('Save error:', error);
             if (showAlert) alert('Ошибка сохранения');
         }
