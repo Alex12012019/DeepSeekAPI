@@ -1,9 +1,11 @@
 class ChatApp {
     constructor() {
         this.currentChat = null;
+        this.autoSaveInterval = null;
         this.initElements();
         this.bindEvents();
         this.loadConversations();
+        this.startAutoSave();
     }
 
     initElements() {
@@ -140,27 +142,51 @@ class ChatApp {
     async loadConversations() {
         try {
             const response = await fetch('/api/get_conversations');
-            if (!response.ok) throw new Error('Failed to load conversations');
+            if (!response.ok) throw new Error('Ошибка загрузки');
             
             const conversations = await response.json();
             this.renderConversationList(conversations);
         } catch (error) {
-            console.error('Load conversations error:', error);
-            alert('Не удалось загрузить диалоги');
+            console.error('Ошибка:', error);
+            this.elements.conversationList.innerHTML = `
+                <div class="error-loading">
+                    Ошибка загрузки диалогов
+                </div>
+            `;
         }
     }
 
     renderConversationList(conversations) {
-        this.elements.conversationList.innerHTML = conversations.map(conv => `
-            <div class="conversation-item" data-id="${conv.filename}">
-                <div class="conv-name">${conv.name}</div>
-                <div class="conv-date">${new Date(conv.date).toLocaleString()}</div>
+    // Очищаем список перед обновлением
+    this.elements.conversationList.innerHTML = '';
+
+    if (conversations.length === 0) {
+        this.elements.conversationList.innerHTML = `
+            <div class="no-conversations">
+                Нет сохраненных диалогов
+            </div>
+        `;
+        return;
+    }
+
+    conversations.forEach(conv => {
+            const item = document.createElement('div');
+            item.className = 'conversation-item';
+            item.dataset.id = conv.filename;
+            
+            item.innerHTML = `
+                <div class="conv-content">
+                    <div class="conv-name">${conv.name}</div>
+                    <div class="conv-date">${new Date(conv.date).toLocaleString()}</div>
+                </div>
                 <div class="conv-actions">
                     <button class="rename-btn" title="Переименовать">✏️</button>
                     <button class="delete-btn" title="Удалить">🗑️</button>
                 </div>
-            </div>
-        `).join('');
+            `;
+            
+            this.elements.conversationList.appendChild(item);
+        });
     }
 
     async loadChat(chatId) {
@@ -232,6 +258,64 @@ class ChatApp {
             this.elements.chatContainer.innerHTML = '';
         }
     }
+
+    startAutoSave() {
+        // Автосохранение каждые 30 секунд
+        this.autoSaveInterval = setInterval(() => {
+            if (this.currentChat?.messages?.length > 0) {
+                this.saveChat(false); // silent mode
+            }
+        }, 30000);
+        
+        // Сохранение при закрытии вкладки
+        window.addEventListener('beforeunload', (e) => {
+            if (this.currentChat?.messages?.length > 0) {
+                this.saveChat(false);
+            }
+        });
+    }
+
+    showStatusMessage(text, duration) {
+        const status = document.createElement('div');
+        status.className = 'status-message';
+        status.textContent = text;
+        document.body.appendChild(status);
+        setTimeout(() => status.remove(), duration);
+    }
+
+    async saveChat(showAlert = true) {
+        this.showStatusMessage('Автосохранение...', 2000);
+        if (!this.currentChat?.messages || this.currentChat.messages.length === 0) {
+            if (showAlert) alert('Нет сообщений для сохранения');
+            return;
+        }
+
+        try {
+            const isNewChat = !this.currentChat.id;
+            const response = await fetch('/api/save_conversation', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    messages: this.currentChat.messages,
+                    filename: this.currentChat.id, // Для перезаписи существующего
+                    name: this.currentChat.name
+                })
+            });
+
+            const data = await response.json();
+            this.currentChat.id = data.filename;
+            this.currentChat.name = data.name;
+            
+            if (showAlert) {
+                alert(isNewChat ? 'Диалог сохранён' : 'Диалог обновлён');
+            }
+            this.loadConversations();
+        } catch (error) {
+            console.error('Save error:', error);
+            if (showAlert) alert('Ошибка сохранения');
+        }
+    }
+    
 }
 
 // Инициализация приложения

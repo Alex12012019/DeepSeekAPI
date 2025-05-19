@@ -110,80 +110,94 @@ def load_conversation(filename):
 @app.route('/api/send_message', methods=['POST'])
 def send_message():
     try:
-        data = request.json
-        user_message = data.get('message', '')
-        conversation = data.get('messages', [])
+        logger.debug("Получен запрос: %s", request.json)
         
-        if not user_message:
-            logger.warning("Пустое сообщение")
-            return jsonify({'error': 'Empty message'}), 400
+        if not request.json:
+            return jsonify({'error': 'Missing JSON data'}), 400
+            
+        message = request.json.get('message')
+        history = request.json.get('messages', [])
         
-        messages = [{"role": msg["role"], "content": msg["content"]} for msg in conversation]
-        messages.append({"role": "user", "content": user_message})
+        if not message:
+            return jsonify({'error': 'Message is required'}), 400
+            
+        # Формируем полный контекст
+        messages = [{"role": "user", "content": message}]
+        if history:
+            messages = history + messages
+            
+        logger.debug("Отправка в Deepseek: %s", messages)
         
-        logger.debug(f"Отправка сообщения (история: {len(messages)} сообщений)")
         response = client.chat.completions.create(
             model="deepseek-chat",
             messages=messages,
-            temperature=0.7,
-            max_tokens=2000
+            temperature=0.7
         )
         
-        assistant_reply = response.choices[0].message.content
-        new_messages = conversation + [
-            {"role": "user", "content": user_message, "timestamp": datetime.datetime.now().isoformat()},
-            {"role": "assistant", "content": assistant_reply, "timestamp": datetime.datetime.now().isoformat()}
-        ]
-        
-        logger.debug("Успешный ответ от API")
+        reply = response.choices[0].message.content
         return jsonify({
             'status': 'success',
-            'assistant_reply': assistant_reply,
-            'messages': new_messages
+            'assistant_reply': reply,
+            'messages': messages + [
+                {"role": "assistant", "content": reply}
+            ]
         })
+        
     except Exception as e:
-        logger.error(f"Ошибка отправки сообщения: {str(e)}")
+        logger.exception("Ошибка в send_message:")
         return jsonify({
             'status': 'error',
-            'error': str(e),
-            'messages': conversation
+            'error': str(e)
         }), 500
-
+    
 @app.route('/api/save_conversation', methods=['POST'])
 def save_conversation():
     try:
         data = request.json
         messages = data.get('messages', [])
+        filename = data.get('filename')  # Новый параметр для существующих чатов
         custom_name = data.get('name', '').strip()
-        
+
         if not messages:
-            logger.warning("Попытка сохранения пустого диалога")
             return jsonify({'error': 'Empty conversation'}), 400
-        
-        timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-        name = sanitize_filename(custom_name) if custom_name else generate_chat_name(messages)
-        filename = f"conv_{timestamp}_{name}.json"
-        filepath = os.path.join(UPLOAD_FOLDER, filename)
-        
-        with open(filepath, 'w', encoding='utf-8') as f:
-            json.dump({
-                'meta': {
-                    'name': name,
-                    'created': datetime.datetime.now().isoformat()
-                },
-                'messages': messages
-            }, f, indent=2, ensure_ascii=False)
-        
-        logger.info(f"Сохранен новый диалог: {filename}")
+
+        # Если файл указан - перезаписываем, иначе создаём новый
+        if filename and os.path.exists(os.path.join(UPLOAD_FOLDER, filename)):
+            filepath = os.path.join(UPLOAD_FOLDER, filename)
+            with open(filepath, 'r+', encoding='utf-8') as f:
+                data = json.load(f)
+                data['messages'] = messages
+                if custom_name:
+                    data['meta']['name'] = custom_name
+                f.seek(0)
+                json.dump(data, f, indent=2, ensure_ascii=False)
+                f.truncate()
+            
+            name = data['meta']['name']
+        else:
+            timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+            name = sanitize_filename(custom_name) if custom_name else generate_chat_name(messages)
+            filename = f"conv_{timestamp}_{name}.json"
+            filepath = os.path.join(UPLOAD_FOLDER, filename)
+            
+            with open(filepath, 'w', encoding='utf-8') as f:
+                json.dump({
+                    'meta': {
+                        'name': name,
+                        'created': datetime.datetime.now().isoformat(),
+                        'updated': datetime.datetime.now().isoformat()
+                    },
+                    'messages': messages
+                }, f, indent=2, ensure_ascii=False)
+
         return jsonify({
             'status': 'success',
             'filename': filename,
             'name': name
         })
     except Exception as e:
-        logger.error(f"Ошибка сохранения диалога: {str(e)}")
         return jsonify({'error': str(e)}), 500
-
+    
 @app.route('/api/delete_chat/<filename>', methods=['POST'])
 def delete_chat(filename):
     try:
