@@ -370,6 +370,7 @@ body {
     align-items: center;
     gap: 5px;
     transition: background 0.2s;
+    height: 60px;
 }
 
 .file-upload-button:hover {

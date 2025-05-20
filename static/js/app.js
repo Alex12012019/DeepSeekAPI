@@ -14,6 +14,8 @@ class ChatApp {
 
         this.initLoader();
         this.initFileUpload();
+        this.currentUploadAbortController = null;
+        //this.renderMessages = this.renderMessages.bind(this);
     }
 
     createNewChat() {
@@ -83,12 +85,6 @@ class ChatApp {
             }
         }
 
-        // Сохранение чата
-        //if (e.target.closest('#save-chat') || e.target.id === 'save-chat') {
-        //    this.saveChat();
-        //    return;
-        //}
-
     }
 
     async sendMessage() {
@@ -136,21 +132,17 @@ class ChatApp {
         }
     }
 
-    addMessage(role, content, isMarkdown = true) {
+    // 2. Унифицированный метод добавления сообщений
+    addMessage(role, content) {
         const messageDiv = document.createElement('div');
         messageDiv.className = `message ${role}-message`;
         
         const contentDiv = document.createElement('div');
         contentDiv.className = 'message-content';
-        contentDiv.innerHTML = isMarkdown ? marked.parse(content) : content;
+        contentDiv.innerHTML = marked.parse(content);
         
         messageDiv.appendChild(contentDiv);
         this.elements.chatContainer.appendChild(messageDiv);
-        
-        if (role === 'assistant') {
-            this.addCopyButton(messageDiv, content);
-        }
-        
         this.elements.chatContainer.scrollTop = this.elements.chatContainer.scrollHeight;
     }
 
@@ -343,8 +335,11 @@ class ChatApp {
     async loadChat(chatId) {
         try {
             const response = await fetch(`/api/load_conversation/${chatId}`);
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            
             const data = await response.json();
             
+            // Полное обновление состояния
             this.currentChat = {
                 id: chatId,
                 name: data.name || "Без названия",
@@ -352,21 +347,17 @@ class ChatApp {
                 isNew: false
             };
             
-            this.renderMessages();
+            // Очистка и перерисовка
+            this.elements.chatContainer.innerHTML = '';
+            this.currentChat.messages.forEach(msg => {
+                this.addMessage(msg.role, msg.content);
+            });
             
         } catch (error) {
-            console.error('Ошибка загрузки:', error);
-            alert('Не удалось загрузить чат');
+            console.error('Load error:', error);
+            this.addMessage('system', `Ошибка загрузки: ${error.message}`);
         }
     }
-
-    renderMessages() {
-        this.elements.chatContainer.innerHTML = '';
-        this.currentChat.messages.forEach(msg => {
-            this.addMessage(msg.role, msg.content);
-        });
-    }
-
 
 /// ***************** новое для загрузки файлов *******************************    
     async analyzeContent(source) {
@@ -475,32 +466,67 @@ class ChatApp {
         this.fileInfo.style.display = percent > 0 ? 'block' : 'none';
     }
 
+    async newChat() {
+        // Отменяем текущую загрузку файла
+        if (this.currentUploadAbortController) {
+            this.currentUploadAbortController.abort();
+            this.currentUploadAbortController = null;
+        }
+
+        if (!this.currentChat?.messages?.length || confirm('Начать новый чат? Несохранённые изменения будут потеряны.')) {
+            this.currentChat = this.createNewChat();
+            this.elements.chatContainer.innerHTML = '';
+            this.updateFileInfo('', 0); // Сбрасываем прогресс-бар
+        }
+    }
+
     async handleFileUpload(file) {
         try {
+            // Создаем контроллер для возможной отмены
+            this.currentUploadAbortController = new AbortController();
+            
             this.showLoader(true);
-            this.updateFileInfo(`Обработка ${file.name}...`, 0);
+            this.updateFileInfo(`Обработка ${file.name}...`, 20);
 
-            // 1. Читаем файл как Data URL (работает для любых файлов)
-            const fileContent = await this.readFileAsDataURL(file);
+            // 1. Чтение файла
+            const content = await this.readFileContent(file);
             this.updateFileInfo(`Анализ ${file.name}...`, 50);
 
-            // 2. Отправляем на сервер (без предварительного парсинга)
-            const analysis = await this.sendToAnalysisAPI({
-                name: file.name,
-                type: file.type,
-                size: file.size,
-                content: fileContent
+            // 2. Отправка на сервер
+            const response = await fetch('/api/analyze_file', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    filename: file.name,
+                    content: content,
+                    chat_id: this.currentChat.id // Добавляем ID текущего чата
+                }),
+                signal: this.currentUploadAbortController.signal
             });
 
-            // 3. Отображаем результат (пропускаем marked.parse для сырых данных)
-            this.addRawMessage('assistant', `Анализ файла "${file.name}":\n${analysis}`);
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({}));
+                throw new Error(errorData.message || 'Ошибка анализа файла');
+            }
+
+            const result = await response.json();
+            this.updateFileInfo(`Готово!`, 100);
+
+            // 3. Добавляем результат в чат
+            this.addMessage('assistant', `Анализ файла "${file.name}":\n${result.analysis}`);
 
         } catch (error) {
-            console.error('File upload error:', error);
-            this.addRawMessage('system', `❌ Ошибка обработки ${file.name}: ${error.message}`);
+            // Игнорируем ошибки отмены
+            if (error.name !== 'AbortError') {
+                console.error('File upload error:', error);
+                this.addMessage('system', `Ошибка обработки "${file.name}": ${error.message}`);
+            }
         } finally {
-            this.showLoader(false);
-            this.updateFileInfo('', 0);
+            this.currentUploadAbortController = null;
+            setTimeout(() => {
+                this.updateFileInfo('', 0);
+                this.showLoader(false);
+            }, 1000);
         }
     }
 
@@ -536,6 +562,16 @@ class ChatApp {
         this.elements.chatContainer.scrollTop = this.elements.chatContainer.scrollHeight;
     } 
 
+
+    updateFileInfo(text = '', percent = 0) {
+        const fileNameEl = document.getElementById('file-name');
+        const fileProgressEl = document.getElementById('file-progress');
+        const fileInfoEl = document.getElementById('file-info');
+        
+        fileNameEl.textContent = text;
+        fileProgressEl.value = percent;
+        fileInfoEl.style.display = text ? 'block' : 'none';
+    }
 
 }
 
