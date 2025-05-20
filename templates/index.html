@@ -8,6 +8,11 @@
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body>
+    <div id="loader" class="loader" style="display: none;"></div>
+    <div id="file-info" style="display: none; margin: 10px 0;">
+        <span id="file-name"></span>
+        <progress id="file-progress" value="0" max="100" style="width: 100%"></progress>
+    </div>
     <div class="app-container">
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
@@ -31,6 +36,10 @@
             <div class="input-area">
                 <textarea id="user-input" placeholder="Введите сообщение..."></textarea>
                 <button id="send-button">Отправить</button>
+                <label class="file-upload-button">
+                    📁 Загрузить файл
+                    <input type="file" id="file-upload" style="display: none;">
+                </label>
             </div>
         </main>
     </div>

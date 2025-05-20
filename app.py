@@ -6,6 +6,11 @@ from pathlib import Path
 import datetime
 import re
 from openai import OpenAI
+import requests
+from bs4 import BeautifulSoup
+from pdfminer.high_level import extract_text
+from urllib.parse import urlparse
+
 
 # Настройка логирования
 logging.basicConfig(
@@ -275,6 +280,162 @@ def debug():
         'upload_folder': app.config['UPLOAD_FOLDER'],
         'files': os.listdir(os.path.join(os.path.dirname(__file__), app.config['UPLOAD_FOLDER']))
     })
+
+### ***************** новое для загрузки файлов *******************************
+# Безопасная проверка путей
+def is_safe_path(base_path, target_path):
+    base = os.path.abspath(base_path)
+    target = os.path.abspath(target_path)
+    return os.path.commonpath([base]) == os.path.commonpath([base, target])
+
+# Анализатор файлов
+def extract_file_content(filepath):
+    try:
+        ext = os.path.splitext(filepath)[1].lower()
+        
+        if ext == '.pdf':
+            return extract_text(filepath)
+        elif ext in ('.html', '.htm'):
+            with open(filepath, 'r', encoding='utf-8') as f:
+                soup = BeautifulSoup(f, 'html.parser')
+                return soup.get_text(separator='\n', strip=True)
+        else:
+            with open(filepath, 'r', encoding='utf-8') as f:
+                return f.read()
+                
+    except UnicodeDecodeError:
+        return "Бинарный файл (нечитаемый текст)"
+    except Exception as e:
+        raise Exception(f"Ошибка чтения файла: {str(e)}")
+
+def extract_url_content(url):
+    try:
+        response = requests.get(url, timeout=15)
+        response.raise_for_status()
+        
+        if 'text/html' in response.headers.get('Content-Type', ''):
+            soup = BeautifulSoup(response.text, 'html.parser')
+            return soup.get_text(separator='\n', strip=True)
+        return response.text
+        
+    except Exception as e:
+        raise Exception(f"Ошибка чтения URL: {str(e)}")
+
+# API Endpoint
+@app.route('/api/analyze', methods=['POST'])
+def analyze_content():
+    data = request.json
+    source = data.get('source')
+    max_file_size = 10 * 1024 * 1024  # 10 MB (можно настроить)
+
+    if not source:
+        return jsonify({'error': 'Не указан source'}), 400
+
+    try:
+        # Обработка локальных файлов
+        if source.startswith('file://'):
+            filepath = source[7:]
+            if not is_safe_path(app.config['UPLOAD_FOLDER'], filepath):
+                return jsonify({'error': 'Доступ к файлу запрещён'}), 403
+            
+            # Проверка размера файла
+            if os.path.getsize(filepath) > max_file_size:
+                return jsonify({
+                    'error': f'Файл слишком большой (максимум {max_file_size/1024/1024} MB)'
+                }), 413
+                
+            content = extract_file_content(filepath)
+        
+        # Обработка URL
+        elif source.startswith(('http://', 'https://')):
+            content = extract_url_content(source)
+        
+        else:
+            return jsonify({'error': 'Неподдерживаемый источник'}), 400
+
+        if not content:
+            return jsonify({'error': 'Не удалось прочитать контент'}), 500
+
+        return jsonify({
+            'status': 'success',
+            'content': content  # Теперь возвращаем полный контент
+        })
+
+    except Exception as e:
+        logger.error(f"Ошибка анализа: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/upload', methods=['POST'])
+def handle_file_upload():
+    if 'file' not in request.files:
+        return jsonify({'error': 'No file uploaded'}), 400
+    
+    file = request.files['file']
+    if file.filename == '':
+        return jsonify({'error': 'Empty filename'}), 400
+
+    try:
+        # Сохранение файла временно
+        upload_path = os.path.join(app.config['UPLOAD_FOLDER'], 'temp', file.filename)
+        os.makedirs(os.path.dirname(upload_path), exist_ok=True)
+        file.save(upload_path)
+
+        # Анализ содержимого
+        content = extract_file_content(upload_path)
+        
+        # Отправка в DeepSeek API
+        response = client.chat.completions.create(
+            model="deepseek-chat",
+            messages=[{
+                "role": "user",
+                "content": f"Анализ файла {file.filename}:\n{content[:15000]}..."
+            }]
+        )
+        
+        return jsonify({
+            'status': 'success',
+            'filename': file.filename,
+            'analysis': response.choices[0].message.content
+        })
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/analyze_file', methods=['POST'])
+def analyze_file():
+    try:
+        file_data = request.json
+        
+        # Логируем полученные метаданные (без содержимого)
+        logger.info(f"Получен файл: {file_data.get('name')} ({file_data.get('size')} bytes)")
+        
+        # Для текстовых файлов пробуем извлечь текст
+        if file_data['type'].startswith('text/'):
+            try:
+                import base64
+                content = base64.b64decode(file_data['content'].split(',')[1]).decode('utf-8')
+                analysis = f"Текстовое содержимое ({len(content)} символов):\n\n{content[:5000]}..."
+            except:
+                analysis = "Не удалось извлечь текст (возможно, бинарный файл)"
+        else:
+            analysis = f"Бинарный файл {file_data['name']} ({file_data['type']})"
+
+        # Отправляем в DeepSeek API
+        response = client.chat.completions.create(
+            model="deepseek-chat",
+            messages=[{
+                "role": "user",
+                "content": f"Проанализируй этот файл:\n{analysis}"
+            }]
+        )
+        
+        return response.choices[0].message.content
+
+    except Exception as e:
+        logger.error(f"Ошибка анализа файла: {str(e)}")
+        return f"Ошибка анализа: {str(e)}", 500
+    
+    
 
 if __name__ == '__main__':
     logger.info("Запуск приложения")

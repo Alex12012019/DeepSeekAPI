@@ -6,6 +6,14 @@ class ChatApp {
         this.bindEvents();
         this.loadConversations();
         this.startAutoSave();
+        this.initFileUpload();
+        
+        document.getElementById('file-upload').addEventListener('change', (e) => {
+            if (e.target.files[0]) this.handleFileUpload(e.target.files[0]);
+        });
+
+        this.initLoader();
+        this.initFileUpload();
     }
 
     createNewChat() {
@@ -358,6 +366,176 @@ class ChatApp {
             this.addMessage(msg.role, msg.content);
         });
     }
+
+
+/// ***************** новое для загрузки файлов *******************************    
+    async analyzeContent(source) {
+        try {
+            this.showLoader(true); // Показываем индикатор загрузки
+            
+            const response = await fetch('/api/analyze', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ source })
+            });
+            
+            const data = await response.json();
+            
+            if (data.status === 'success') {
+                // Разбиваем большой текст на части
+                const chunkSize = 15000; // Чтобы не перегружать интерфейс
+                for (let i = 0; i < data.content.length; i += chunkSize) {
+                    const chunk = data.content.slice(i, i + chunkSize);
+                    this.addMessage('system', `Анализ (часть ${i/chunkSize + 1}):\n${chunk}`);
+                    await new Promise(resolve => setTimeout(resolve, 100)); // Задержка между частями
+                }
+            } else {
+                alert(`Ошибка: ${data.error}`);
+            }
+        } catch (error) {
+            console.error('Analysis error:', error);
+            alert('Ошибка анализа');
+        } finally {
+            this.showLoader(false);
+        }
+    }
+
+    initFileUpload() {
+        const fileInput = document.getElementById('file-upload');
+        
+        fileInput.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            try {
+                this.showLoader(true);
+                
+                // 1. Чтение файла
+                const content = await this.readFileContent(file);
+                
+                // 2. Отправка в DeepSeek API
+                const analysisResult = await this.analyzeWithDeepSeek(content);
+                
+                // 3. Отображение результата
+                this.addMessage('system', `Анализ файла ${file.name}:\n${analysisResult}`);
+                
+            } catch (error) {
+                console.error('File processing error:', error);
+                alert('Ошибка обработки файла');
+            } finally {
+                this.showLoader(false);
+                fileInput.value = ''; // Сброс выбора файла
+            }
+        });
+    }
+
+    async analyzeWithDeepSeek(content) {
+        // Вариант 1: Прямая отправка в API (если поддерживается)
+        const response = await fetch('/api/send_message', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                message: `Проанализируй этот файл:\n${content.slice(0, 15000)}`, // Ограничение на первый фрагмент
+                messages: this.currentChat.messages
+            })
+        });
+        
+        const data = await response.json();
+        return data.assistant_reply;
+    }
+
+    async readFileContent(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            
+            reader.onload = (e) => resolve(e.target.result);
+            reader.onerror = () => reject(new Error("Ошибка чтения файла"));
+            
+            if (file.type.includes('text/') || 
+                ['.txt', '.csv', '.json', '.log'].some(ext => file.name.endsWith(ext))) {
+                reader.readAsText(file);
+            } else {
+                reader.readAsDataURL(file); // Для бинарных файлов
+            }
+        });
+    }
+
+    initLoader() {
+        this.loader = document.getElementById('loader');
+        this.fileProgress = document.getElementById('file-progress');
+        this.fileInfo = document.getElementById('file-info');
+    }
+
+    showLoader(show) {
+        this.loader.style.display = show ? 'block' : 'none';
+    }
+
+    updateProgress(percent) {
+        this.fileProgress.value = percent;
+        this.fileInfo.style.display = percent > 0 ? 'block' : 'none';
+    }
+
+    async handleFileUpload(file) {
+        try {
+            this.showLoader(true);
+            this.updateFileInfo(`Обработка ${file.name}...`, 0);
+
+            // 1. Читаем файл как Data URL (работает для любых файлов)
+            const fileContent = await this.readFileAsDataURL(file);
+            this.updateFileInfo(`Анализ ${file.name}...`, 50);
+
+            // 2. Отправляем на сервер (без предварительного парсинга)
+            const analysis = await this.sendToAnalysisAPI({
+                name: file.name,
+                type: file.type,
+                size: file.size,
+                content: fileContent
+            });
+
+            // 3. Отображаем результат (пропускаем marked.parse для сырых данных)
+            this.addRawMessage('assistant', `Анализ файла "${file.name}":\n${analysis}`);
+
+        } catch (error) {
+            console.error('File upload error:', error);
+            this.addRawMessage('system', `❌ Ошибка обработки ${file.name}: ${error.message}`);
+        } finally {
+            this.showLoader(false);
+            this.updateFileInfo('', 0);
+        }
+    }
+
+    readFileAsDataURL(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = () => reject(new Error('Не удалось прочитать файл'));
+            reader.readAsDataURL(file);
+        });
+    }
+
+    async sendToAnalysisAPI(fileData) {
+        const response = await fetch('/api/analyze_file', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(fileData)
+        });
+
+        if (!response.ok) {
+            const error = await response.text();
+            throw new Error(error || 'Ошибка сервера');
+        }
+
+        return await response.text(); // Получаем сырой текст без парсинга
+    }
+
+    addRawMessage(role, content) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${role}-message`;
+        messageDiv.textContent = content; // Используем textContent вместо marked.parse
+        this.elements.chatContainer.appendChild(messageDiv);
+        this.elements.chatContainer.scrollTop = this.elements.chatContainer.scrollHeight;
+    } 
+
 
 }
 
