@@ -85,9 +85,11 @@ def get_conversations():
                     created_time = os.path.getmtime(filepath)
                     
                     conversations.append({
-                        'filename': filename,
+                        'id': meta['id'],
                         'name': name,
-                        'date': created_time * 1000  # JavaScript timestamp
+                        'filename': filename,
+                        'created': meta['created'],
+                        'updated': meta['updated']
                     })
                     
                 except Exception as e:
@@ -95,7 +97,9 @@ def get_conversations():
                     continue
 
         # Сортировка по дате (новые сверху)
-        conversations.sort(key=lambda x: x['date'], reverse=True)
+        
+        conversations.sort(key=lambda x: x['updated'], reverse=True)
+        
         return jsonify(conversations)
         
     except Exception as e:
@@ -104,6 +108,7 @@ def get_conversations():
 
 @app.route('/api/load_conversation/<filename>')
 def load_conversation(filename):
+
     try:
         if not filename.endswith('.json') or '/' in filename:
             logger.warning(f"Некорректное имя файла: {filename}")
@@ -119,9 +124,16 @@ def load_conversation(filename):
         
         logger.debug(f"Загружен диалог {filename} с {len(data.get('messages', []))} сообщениями")
         return jsonify({
+            'id': data.get('meta', {}).get('id', 'No Id'),
+            'name': data.get('meta', {}).get('name', 'Без названия'),
+            'filename': filename,
+            'created': data.get('meta', {}).get('created', 'No created date'),
+            'updated': data.get('meta', {}).get('updated', ''),
             'messages': data.get('messages', []),
-            'name': data.get('meta', {}).get('name', 'Без названия')
+            'fileAnalysis': [],
+            'isNew': False
         })
+    
     except Exception as e:
         logger.error(f"Ошибка загрузки диалога {filename}: {str(e)}")
         return jsonify({'error': str(e)}), 500
@@ -173,11 +185,12 @@ def send_message():
 def save_conversation():
     try:
         data = request.json
+
         messages = data.get('messages', [])
         filename = data.get('filename')  # Может быть None для нового чата
         custom_name = data.get('name', '').strip()
 
-        if not messages:
+        if not messages:    
             return jsonify({'error': 'Пустой диалог'}), 400
 
         # Генерируем имя, если не указано
@@ -185,14 +198,19 @@ def save_conversation():
             first_msg = next((m for m in messages if m.get('role') == 'user'), None)
             custom_name = first_msg.get('content', 'Новый чат')[:30] if first_msg else 'Новый чат'
 
+        id = data.get('id')
         # Если файл существует - перезаписываем
         if filename and os.path.exists(os.path.join(app.config['UPLOAD_FOLDER'], filename)):
             filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             with open(filepath, 'r+', encoding='utf-8') as f:
                 chat_data = json.load(f)
-                chat_data['messages'] = messages
+
+                chat_data['meta']['id'] = id
                 chat_data['meta']['name'] = custom_name
                 chat_data['meta']['updated'] = datetime.datetime.now().isoformat()
+                chat_data['meta']['created'] = data.get('created')
+
+                chat_data['messages'] = messages
                 f.seek(0)
                 json.dump(chat_data, f, indent=2, ensure_ascii=False)
                 f.truncate()
@@ -201,10 +219,12 @@ def save_conversation():
             timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
             filename = f"conv_{timestamp}_{sanitize_filename(custom_name)}.json"
             filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            id = datetime.datetime.now().isoformat()
             
             with open(filepath, 'w', encoding='utf-8') as f:
                 json.dump({
                     'meta': {
+                        'id': id,
                         'name': custom_name,
                         'created': datetime.datetime.now().isoformat(),
                         'updated': datetime.datetime.now().isoformat()
@@ -214,6 +234,7 @@ def save_conversation():
 
         return jsonify({
             'status': 'success',
+            'id': id,
             'filename': filename,
             'name': custom_name
         })

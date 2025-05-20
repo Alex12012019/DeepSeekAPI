@@ -1,0 +1,74 @@
+{
+  "meta": {
+    "id": "2025-05-20T17:28:57.545258",
+    "name": "Новый чат",
+    "created": "2025-05-20T17:28:57.554178",
+    "updated": "2025-05-20T18:52:19.694652"
+  },
+  "messages": [
+    {
+      "content": "Hi!",
+      "role": "user"
+    },
+    {
+      "content": "Ошибка: marked(): input parameter is undefined or null\nPlease report this to https://github.com/markedjs/marked.",
+      "role": "assistant"
+    },
+    {
+      "content": "Hi!",
+      "role": "user"
+    },
+    {
+      "content": "Ошибка: marked(): input parameter is undefined or null\nPlease report this to https://github.com/markedjs/marked.",
+      "role": "assistant"
+    },
+    {
+      "content": "Hi!",
+      "role": "user"
+    },
+    {
+      "content": "Ошибка: marked(): input parameter is undefined or null\nPlease report this to https://github.com/markedjs/marked.",
+      "role": "assistant"
+    },
+    {
+      "content": "Hi!",
+      "role": "user"
+    },
+    {
+      "content": "Ошибка: marked(): input parameter is undefined or null\nPlease report this to https://github.com/markedjs/marked.",
+      "role": "assistant"
+    },
+    {
+      "role": "user",
+      "content": "Hi!"
+    },
+    {
+      "role": "assistant",
+      "content": "Ошибка: marked(): input parameter is undefined or null\nPlease report this to https://github.com/markedjs/marked."
+    },
+    {
+      "role": "user",
+      "content": "Hi!"
+    },
+    {
+      "role": "assistant",
+      "content": "Ошибка: marked(): input parameter is undefined or null\nPlease report this to https://github.com/markedjs/marked."
+    },
+    {
+      "role": "user",
+      "content": "Hi!"
+    },
+    {
+      "role": "assistant",
+      "content": "Ошибка: marked(): input parameter is undefined or null\nPlease report this to https://github.com/markedjs/marked."
+    },
+    {
+      "role": "user",
+      "content": "Hi!"
+    },
+    {
+      "role": "assistant",
+      "content": "Ошибка: marked(): input parameter is undefined or null\nPlease report this to https://github.com/markedjs/marked."
+    }
+  ]
+}
