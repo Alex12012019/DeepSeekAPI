@@ -1,0 +1,18 @@
+{
+  "meta": {
+    "id": "2025-05-20T19:29:09.443675",
+    "name": "фыва",
+    "created": "2025-05-20T19:29:09.443763",
+    "updated": "2025-05-20T19:29:09.443766"
+  },
+  "messages": [
+    {
+      "role": "user",
+      "content": "фывап"
+    },
+    {
+      "role": "assistant",
+      "content": "Ошибка: marked(): input parameter is undefined or null\nPlease report this to https://github.com/markedjs/marked."
+    }
+  ]
+}

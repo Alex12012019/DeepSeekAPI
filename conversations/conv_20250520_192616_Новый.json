@@ -1,0 +1,18 @@
+{
+  "meta": {
+    "id": "2025-05-20T19:26:16.786290",
+    "name": "Новый",
+    "created": "2025-05-20T19:26:16.786403",
+    "updated": "2025-05-20T19:26:16.786407"
+  },
+  "messages": [
+    {
+      "role": "user",
+      "content": "hi"
+    },
+    {
+      "role": "assistant",
+      "content": "Ошибка: marked(): input parameter is undefined or null\nPlease report this to https://github.com/markedjs/marked."
+    }
+  ]
+}

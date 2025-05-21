@@ -1,3 +1,6 @@
+import { ChatManager } from './ChatManager.js';
+import { Message } from './Message.js';
+
 class ChatApp {
     constructor() {
         try {
@@ -20,6 +23,7 @@ class ChatApp {
             this.bindEvents();
             
             // 5. Загрузка данных
+            this.manager = null;
             this.loadConversations();
             
             console.log("ChatApp успешно инициализирован");
@@ -97,10 +101,9 @@ class ChatApp {
         });
 
         // Автосохранение
-        this.startAutoSave();
+        //this.startAutoSave();
 
         this.elements.conversationList.addEventListener('click', (event) => this.loadChat(event));
-        this.isOne = false;
     }
 
     // ==================== РАБОТА С ЧАТАМИ ====================
@@ -108,7 +111,7 @@ class ChatApp {
     createNewChat() {
         return {
             id: 'tmp-' + Date.now(),
-            name: "Новый чат",
+            name: "",
             filename: "",
             created: "",
             updated: "",
@@ -144,27 +147,38 @@ class ChatApp {
                 throw new Error("Данные диалогов должны быть массивом");
             }
             
-            this.renderConversationList(conversations);
+            this.manager = new ChatManager();
+            this.manager.loadChats(conversations);
+            this.renderConversationList();
             
         } catch (error) {
             console.error("Ошибка загрузки диалогов:", error);
             this.showError("Не удалось загрузить список чатов");
             // Показываем пустой список при ошибке
-            this.renderConversationList([]);
+            this.renderConversationList();
         }
     }
 
-    renderConversationList(conversations) {
+    renderConversationList() {
+
+        if (this.isOne) return;
+        this.isOne = true;
+
         const container = this.elements.conversationList;
-        
-        if (!container) return;
+        if (!container) {
+            this.isOne = false;
+            return;
+        }
 
         // Очищаем контейнер
         container.innerHTML = '';
+        
+        const conversations = this.manager.getChatList();
 
         // Если диалогов нет
         if (!conversations || conversations.length === 0) {
             container.innerHTML = '<div class="no-conversations">Нет сохранённых диалогов</div>';
+            this.isOne = false;
             return;
         }
 
@@ -174,19 +188,12 @@ class ChatApp {
 
             const chatId = chat.id;
             const chatName = chat.name || 'Без названия';
-            const chatFileName = chat.filename || 'Файл без названия';
-            const chatCreated = chat.created || new Date().toISOString();
             const chatUpdated = chat.updated || new Date().toISOString();
-
-            if (!chatId) {
-                console.warn("Некорректный формат чата:", chat);
-                return;
-            }
 
             const item = document.createElement('div');
             item.className = 'conversation-item';
             item.dataset.id = chatId;
-            item.dataset.fileName = chatFileName;
+            item.dataset.fileName = chat.filename;
             
             item.innerHTML = `
                 <div class="conversation" data-chat-id="${chatId}">
@@ -202,6 +209,7 @@ class ChatApp {
             `;
             
             container.appendChild(item);
+            this.isOne = false;
         });
     }
 
@@ -314,7 +322,6 @@ class ChatApp {
                 const newName = prompt("Введите название чата:", this.currentChat.name);
                 if (!newName) return;
                 this.currentChat.name = newName;
-                this.currentChat.id = "id_" + newName;
             }
 
             // Подготовка данных для сохранения
@@ -381,13 +388,9 @@ class ChatApp {
     async sendMessage() {
         const messageText = this.elements.userInput.value.trim();
         if (!messageText) return;
+        alert(this.currentChat.messages);
 
         try {
-            // Добавляем сообщение пользователя
-            this.addMessage('user', messageText);
-            this.elements.userInput.value = '';
-            this.setLoadingState(true);
-
             // Отправляем на сервер
             const response = await fetch('/api/send_message', {
                 method: 'POST',
@@ -633,6 +636,7 @@ class ChatApp {
         }, 5000);
     }
 }
+
 
 // Инициализация приложения при загрузке страницы
 document.addEventListener('DOMContentLoaded', () => {

@@ -202,8 +202,8 @@ def save_conversation():
         # Если файл существует - перезаписываем
         if filename and os.path.exists(os.path.join(app.config['UPLOAD_FOLDER'], filename)):
             filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-            with open(filepath, 'r+', encoding='utf-8') as f:
-                chat_data = json.load(f)
+            with open(filepath, 'w', encoding='utf-8') as f:
+                chat_data = []
 
                 chat_data['meta']['id'] = id
                 chat_data['meta']['name'] = custom_name
@@ -211,9 +211,7 @@ def save_conversation():
                 chat_data['meta']['created'] = data.get('created')
 
                 chat_data['messages'] = messages
-                f.seek(0)
                 json.dump(chat_data, f, indent=2, ensure_ascii=False)
-                f.truncate()
         else:
             # Создаём новый файл
             timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
