@@ -399,3 +399,36 @@ body {
 #file-progress::-webkit-progress-value {
     background: #4fc3f7;
 }
+
+.chat-title {
+    font-size: 1.2em;
+    font-weight: bold;
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+    background-color: #f9f9f9;
+}
+
+.send-button {
+    /* Ваши текущие стили кнопки */
+    transition: all 0.3s ease;
+}
+
+.send-button.loading {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.send-button .spinner {
+    display: none;
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-radius: 50%;
+    border-top-color: #fff;
+    animation: spin 1s ease-in-out infinite;
+    margin-right: 8px;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}

@@ -1,4 +1,5 @@
 import { Chat } from './Chat.js';
+import { Message } from './Message.js';
 
 export class ChatManager {
     constructor() {
@@ -42,14 +43,31 @@ export class ChatManager {
     }
 
     loadChats(conversations) {
-        this.chats = conversations.map(chat => ({
-                                id: chat.id, 
-                                name: chat.name || 'Без названия',
-                                filename: chat.filename || 'Файл без названия',
-                                created: chat.created || new Date().toISOString(),
-                                updated: chat.updated || new Date().toISOString(),
-                                messages: chat.messages || []
-        }));
+        this.chats = conversations.map(chat => new Chat(chat));
+        //this.chats = conversations.map(chat => ({
+        //                        id: chat.id, 
+        //                        name: chat.name || 'Без названия',
+        //                        filename: chat.filename || 'Файл без названия',
+        //                        created: chat.created || new Date().toISOString(),
+        //                        updated: chat.updated || new Date().toISOString(),
+        //                        messages: chat.messages || []
+        //}));
+    }
+
+    addMessageToChat(chatId, role, content) {
+        const chat = this.loadChatById(chatId);
+
+        if (!chat) return false;
+
+        if (chat.messages.length > 0) {
+            const lastMessage = chat.messages[chat.messages.length - 1];
+            if ((lastMessage.role == role) && (lastMessage.content == content)) return false;
+        }
+
+        const message = new Message(role, content);
+        chat.addMessage(message);
+
+        return true;
     }
 
 }

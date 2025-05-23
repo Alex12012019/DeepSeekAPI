@@ -89,7 +89,8 @@ def get_conversations():
                         'name': name,
                         'filename': filename,
                         'created': meta['created'],
-                        'updated': meta['updated']
+                        'updated': meta['updated'],
+                        'messages': data.get('messages', [])
                     })
                     
                 except Exception as e:
@@ -106,38 +107,6 @@ def get_conversations():
         logger.error(f"Error in get_conversations: {str(e)}")
         return jsonify({'error': str(e)}), 500
 
-@app.route('/api/load_conversation/<filename>')
-def load_conversation(filename):
-
-    try:
-        if not filename.endswith('.json') or '/' in filename:
-            logger.warning(f"Некорректное имя файла: {filename}")
-            return jsonify({'error': 'Invalid filename'}), 400
-        
-        filepath = os.path.join(UPLOAD_FOLDER, filename)
-        if not os.path.exists(filepath):
-            logger.warning(f"Файл не найден: {filename}")
-            return jsonify({'error': 'File not found'}), 404
-        
-        with open(filepath, 'r', encoding='utf-8') as f:
-            data = json.load(f)
-        
-        logger.debug(f"Загружен диалог {filename} с {len(data.get('messages', []))} сообщениями")
-        return jsonify({
-            'id': data.get('meta', {}).get('id', 'No Id'),
-            'name': data.get('meta', {}).get('name', 'Без названия'),
-            'filename': filename,
-            'created': data.get('meta', {}).get('created', 'No created date'),
-            'updated': data.get('meta', {}).get('updated', ''),
-            'messages': data.get('messages', []),
-            'fileAnalysis': [],
-            'isNew': False
-        })
-    
-    except Exception as e:
-        logger.error(f"Ошибка загрузки диалога {filename}: {str(e)}")
-        return jsonify({'error': str(e)}), 500
-
 @app.route('/api/send_message', methods=['POST'])
 def send_message():
     try:
@@ -146,32 +115,19 @@ def send_message():
         if not request.json:
             return jsonify({'error': 'Missing JSON data'}), 400
             
-        message = request.json.get('message')
-        history = request.json.get('messages', [])
-        
-        if not message:
-            return jsonify({'error': 'Message is required'}), 400
-            
-        # Формируем полный контекст
-        messages = [{"role": "user", "content": message}]
-        if history:
-            messages = history + messages
-            
-        logger.debug("Отправка в Deepseek: %s", messages)
-        
+        print(request.json.get('messages', []))
+
         response = client.chat.completions.create(
             model="deepseek-chat",
-            messages=messages,
+            messages=request.json.get('messages', []),
             temperature=0.7
         )
         
         reply = response.choices[0].message.content
+        print(reply)
         return jsonify({
             'status': 'success',
-            'assistant_reply': reply,
-            'messages': messages + [
-                {"role": "assistant", "content": reply}
-            ]
+            'assistant_reply': reply
         })
         
     except Exception as e:
@@ -203,7 +159,8 @@ def save_conversation():
         if filename and os.path.exists(os.path.join(app.config['UPLOAD_FOLDER'], filename)):
             filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             with open(filepath, 'w', encoding='utf-8') as f:
-                chat_data = []
+                chat_data = {}
+                chat_data['meta'] = {}
 
                 chat_data['meta']['id'] = id
                 chat_data['meta']['name'] = custom_name

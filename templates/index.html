@@ -15,6 +15,15 @@
     </div>
     <div class="app-container">
         <aside class="sidebar" id="sidebar">
+            <div  class="sidebar-header">
+                <label for="model-select">Модель:</label>
+                <select id="model-select">
+                    <option value="Proxy API Deepseek">Proxy</option>
+                    <option value="GigaChat API">GigaChat</option>
+                    <option value="Deepseek API" selected>DeepSeek</option>
+                    <option value="Local-model">Local</option>
+                </select>
+            </div>
             <div class="sidebar-header">
                 <h2>Диалоги</h2>
             </div>
@@ -31,6 +40,7 @@
         </aside>
 
         <main class="main-content">
+            <div id="chat-title" class="chat-title">Выберите диалог</div>
             <div class="chat-container" id="chat-container"></div>
             
             <div class="input-area">
