@@ -22,6 +22,9 @@ class ChatApp {
             // 5. Загрузка данных
             this.manager = null;
             this.loadConversations();
+
+            // 6. Для выбора модели
+            
             
             console.log("ChatApp успешно инициализирован");
         } catch (error) {
