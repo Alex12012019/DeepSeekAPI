@@ -3,6 +3,8 @@ import { ChatManager } from './ChatManager.js';
 class ChatApp {
     constructor() {
         try {
+            this.currentModel = null; // Добавляем свойство для хранения текущей модели
+
             // 1. Проверка обязательных элементов DOM
             this.checkRequiredElements();
             
@@ -22,6 +24,7 @@ class ChatApp {
             // 5. Загрузка данных
             this.manager = null;
             this.loadConversations();
+            this.loadModels();
 
             // 6. Для выбора модели
             
@@ -93,6 +96,10 @@ class ChatApp {
             }
         });
 
+        document.getElementById('model-select').addEventListener('change', (e) => {
+            this.handleModelChange(e.target.value);
+        });
+        
         // Управление чатами
         this.elements.newChatBtn.addEventListener('click', () => this.newChat());
         this.elements.saveButton.addEventListener('click', () => this.saveChat());
@@ -403,7 +410,6 @@ class ChatApp {
 
     async sendMessage() {
         const messageText = this.elements.userInput.value.trim();
-        
         if (!messageText) return;
         
        
@@ -427,7 +433,8 @@ class ChatApp {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     messages: this.manager.loadChatById(this.ActiveChatId).messages,
-                    chatId: this.ActiveChatId
+                    chatId: this.ActiveChatId,
+                    model: this.currentModel // Добавляем выбранную модель
                 })
             });
 
@@ -664,6 +671,47 @@ class ChatApp {
             errorDiv.remove();
         }, 5000);
     }
+
+    async loadModels() {
+        try {
+            const response = await fetch('/api/get_models');
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+
+            const models = await response.json();
+            
+            const modelSelect = document.getElementById('model-select');
+            modelSelect.innerHTML = ''; // Clear loading message
+            
+            models.forEach(model => {
+                const option = document.createElement('option');
+                option.value = model.name;
+                option.textContent = model.name;
+                modelSelect.appendChild(option);
+            });
+            
+            // Set default selection if needed
+            if (models.length > 0) {
+                modelSelect.value = models[0].name;
+            }
+            
+        } catch (error) {
+            console.error("Ошибка загрузки моделей:", error);
+            const modelSelect = document.getElementById('model-select');
+            modelSelect.innerHTML = '<option value="">Ошибка загрузки моделей</option>';
+        }
+    }
+
+    handleModelChange(selectedModel) {
+        this.currentModel = selectedModel;
+        console.log("Selected model:", this.currentModel);
+        if (this.manager) {
+            this.manager.setCurrentModel(selectedModel);
+        }
+    }
+    
 }
 
 

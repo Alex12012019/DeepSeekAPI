@@ -11,6 +11,8 @@ from bs4 import BeautifulSoup
 from pdfminer.high_level import extract_text
 from urllib.parse import urlparse
 
+from gigachat import GigaChat
+from gigachat.models import Chat, Messages, MessagesRole
 
 # Настройка логирования
 logging.basicConfig(
@@ -41,12 +43,6 @@ UPLOAD_FOLDER = config['app']['upload_folder']
 
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-
-# Инициализация клиента OpenAI
-client = OpenAI(
-    api_key=config['openai']['api_key'],
-    base_url=config['openai']['base_url']
-)
 
 # Вспомогательные функции
 def sanitize_filename(name):
@@ -107,6 +103,28 @@ def get_conversations():
         logger.error(f"Error in get_conversations: {str(e)}")
         return jsonify({'error': str(e)}), 500
 
+def prepare_messages(messages):
+    messages2 = []
+
+    # Проверяем, есть ли system-сообщение первым
+    if not messages or messages[0].get('role') != 'system':
+        messages2.append({
+            'role': 'system',
+            'content': 'Ты — умный ассистент.'
+        })
+
+    # Добавляем остальные сообщения
+    for message in messages:
+        role = message.get('role', 'user')
+        content = message.get('content', '')
+        messages2.append({
+            'role': role,
+            'content': content
+        })
+
+    return messages2
+
+
 @app.route('/api/send_message', methods=['POST'])
 def send_message():
     try:
@@ -116,12 +134,35 @@ def send_message():
             return jsonify({'error': 'Missing JSON data'}), 400
             
         print(request.json.get('messages', []))
+        
+        # Получаем выбранную модель из запроса
+        selected_model = request.json.get('model', 'Deepseek API')
+        
+        # Настраиваем клиент в зависимости от выбранной модели
+        model_config = config['llm'].get(selected_model, config['llm']['Deepseek China'])
+        messages = request.json.get('messages', [])
+        
+        if (model_config.get('interface') == "GigaChat"):
+            print("GigaChat model")
+            
+            messages2 = prepare_messages(messages)
 
-        response = client.chat.completions.create(
-            model="deepseek-chat",
-            messages=request.json.get('messages', []),
-            temperature=0.7
-        )
+            with GigaChat(credentials=model_config.get('api_key'), verify_ssl_certs=False) as giga:
+                response = giga.chat({"messages": messages2})
+                print(response)
+            
+        else:
+            print("Deepseek model")
+            client = OpenAI(
+                api_key=model_config.get('api_key'),
+                base_url=model_config.get('base_url')
+            )
+
+            response = client.chat.completions.create(
+                model=model_config.get('model_name', 'deepseek-chat'),  # Используем model_name из конфига
+                messages=messages,
+                temperature=0.7
+            )
         
         reply = response.choices[0].message.content
         print(reply)
@@ -136,7 +177,7 @@ def send_message():
             'status': 'error',
             'error': str(e)
         }), 500
-    
+        
 @app.route('/api/save_conversation', methods=['POST'])
 def save_conversation():
     try:
@@ -257,6 +298,21 @@ def debug():
         'files': os.listdir(os.path.join(os.path.dirname(__file__), app.config['UPLOAD_FOLDER']))
     })
 
+@app.route('/api/get_models')
+def get_models():
+    try:
+        models = []
+        for model_name, model_config in config['llm'].items():
+            models.append({
+                'name': model_name,
+                'api_key': model_config.get('api_key', ''),
+                'base_url': model_config.get('base_url', '')
+            })
+        return jsonify(models)
+    except Exception as e:
+        logger.error(f"Error getting models: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+    
 ### ***************** новое для загрузки файлов *******************************
 # Безопасная проверка путей
 def is_safe_path(base_path, target_path):
