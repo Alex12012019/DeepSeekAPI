@@ -43,10 +43,10 @@
             <div class="input-area">
                 <textarea id="user-input" placeholder="Введите сообщение..."></textarea>
                 <button id="send-button">Отправить</button>
-                <label class="file-upload-button">
-                    📁 Загрузить файл
-                    <input type="file" id="file-upload" style="display: none;">
-                </label>
+                <input type="file" id="file-upload"  accept=".txt,.csv,.json,.log,.md" hidden>
+                    <label for="file-upload" class="upload-button">
+                        📁 Загрузить файл
+                    </label>
             </div>
         </main>
     </div>

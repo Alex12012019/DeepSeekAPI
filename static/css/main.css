@@ -432,3 +432,50 @@ body {
 @keyframes spin {
     to { transform: rotate(360deg); }
 }
+
+/* Стиль для выпадающего списка model-select (как у кнопки "Сохранить") */
+#model-select {
+    padding: 8px 16px;
+    border-radius: 4px;
+    border: 1px solid #4CAF50; /* Зелёная граница, как у кнопки */
+    background-color: #f8f8f8;
+    color: #333;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    outline: none;
+    margin: 5px 0;
+}
+
+#model-select:hover {
+    background-color: #e8f5e9; /* Светло-зелёный при наведении */
+    border-color: #388E3C; /* Темнее при наведении */
+}
+
+#model-select:focus {
+    border-color: #2E7D32; /* Ещё темнее при фокусе */
+    box-shadow: 0 0 5px rgba(46, 125, 50, 0.5); /* Лёгкая тень, как у кнопки */
+}
+
+/* CSS (адаптируйте под ваш дизайн) */
+.upload-button {
+    display: inline-block;
+    padding: 10px 24px;
+    font-size: 16px;
+    font-weight: 500;
+    transition: background 0.2s;
+    margin: 5px 0;
+    text-align: center;
+
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.upload-button:hover {
+    background: #0d62c9; /* Затемнение при наведении */
+}
+
+/* Если у "Отправить" есть box-shadow или другие эффекты — добавьте их */

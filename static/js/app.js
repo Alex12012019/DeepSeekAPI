@@ -49,10 +49,20 @@ class ChatApp {
     }
 
     initFileUpload() {
-        this.elements.fileUpload = document.getElementById('file-upload');
-        if (!this.elements.fileUpload) {
-            console.warn("Элемент #file-upload не найден");
-        }
+        document.getElementById('file-upload').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const fileContent = e.target.result;
+                const promptTextarea = document.getElementById('user-input');
+
+                // Добавляем имя файла и содержимое в промпт
+                promptTextarea.value += `\n[Файл: ${file.name}]\n${fileContent}\n`;
+            };
+            reader.readAsText(file);
+        });
     }
 
     checkRequiredElements() {
@@ -76,7 +86,6 @@ class ChatApp {
             conversationList: document.getElementById('conversation-list'),
             newChatBtn: document.getElementById('new-chat'),
             saveButton: document.getElementById('save-chat'),
-            fileUpload: document.getElementById('file-upload'),
             loader: document.getElementById('loader'),
             fileProgress: document.getElementById('file-progress'),
             fileName: document.getElementById('file-name'),
@@ -103,11 +112,6 @@ class ChatApp {
         // Управление чатами
         this.elements.newChatBtn.addEventListener('click', () => this.newChat());
         this.elements.saveButton.addEventListener('click', () => this.saveChat());
-
-        // Загрузка файлов
-        this.elements.fileUpload.addEventListener('change', (e) => {
-            if (e.target.files[0]) this.handleFileUpload(e.target.files[0]);
-        });
 
         // Автосохранение
         //this.startAutoSave();
@@ -493,133 +497,6 @@ class ChatApp {
         });
         
         container.appendChild(btn);
-    }
-
-    // ==================== РАБОТА С ФАЙЛАМИ ====================
-
-    async handleFileUpload(file) {
-        if (!this.validateFile(file)) return;
-
-        try {
-            // Настройка загрузки
-            this.currentUploadAbortController = new AbortController();
-            this.showLoader(true);
-            this.updateFileInfo(`Загрузка ${file.name}...`, 20);
-
-            // Чтение файла
-            const fileContent = await this.readFileContent(file);
-            this.updateFileInfo(`Обработка...`, 50);
-
-            // Отправка на анализ
-            const analysisResult = await this.analyzeFile(file, fileContent);
-            this.updateFileInfo(`Готово!`, 100);
-
-            // Добавляем результат в чат
-            this.addFileAnalysisResult(file, analysisResult);
-
-        } catch (error) {
-            if (error.name !== 'AbortError') {
-                console.error("Ошибка обработки файла:", error);
-                this.addMessage('system', `Ошибка обработки файла: ${error.message}`);
-            }
-        } finally {
-            this.finalizeFileUpload();
-        }
-    }
-
-    validateFile(file) {
-        const MAX_SIZE = 10 * 1024 * 1024; // 10MB
-        const allowedTypes = [
-            'text/plain', 
-            'application/pdf', 
-            'application/json'
-        ];
-
-        if (file.size > MAX_SIZE) {
-            this.showError(`Файл слишком большой (максимум ${MAX_SIZE/1024/1024}MB)`);
-            return false;
-        }
-
-        if (!allowedTypes.includes(file.type)) {
-            this.showError("Неподдерживаемый тип файла");
-            return false;
-        }
-
-        return true;
-    }
-
-    readFileContent(file) {
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            
-            reader.onload = () => resolve(reader.result);
-            reader.onerror = () => reject(new Error("Ошибка чтения файла"));
-            
-            if (file.type === 'application/pdf') {
-                reader.readAsDataURL(file);
-            } else {
-                reader.readAsText(file);
-            }
-        });
-    }
-
-    async analyzeFile(file, content) {
-        const response = await fetch('/api/analyze_file', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                filename: file.name,
-                content: content,
-                chatId: this.currentChat.id
-            }),
-            signal: this.currentUploadAbortController.signal
-        });
-
-        if (!response.ok) {
-            const error = await response.json().catch(() => ({}));
-            throw new Error(error.message || "Ошибка анализа файла");
-        }
-
-        return await response.json();
-    }
-
-    addFileAnalysisResult(file, result) {
-        const fileMessage = {
-            role: 'assistant',
-            content: `Анализ файла "${file.name}":\n${result.analysis}`,
-            isFileAnalysis: true,
-            fileMeta: {
-                name: file.name,
-                size: file.size,
-                type: file.type,
-                analysisDate: new Date().toISOString()
-            }
-        };
-
-        // Добавляем в историю сообщений
-        this.currentChat.messages.push(fileMessage);
-        
-        // Добавляем в отдельный список файлов
-        this.currentChat.fileAnalysis.push({
-            name: file.name,
-            content: result.analysis
-        });
-
-        // Отображаем в чате
-        this.addMessage(fileMessage.role, fileMessage.content);
-    }
-
-    finalizeFileUpload() {
-        if (this.currentUploadAbortController) {
-            this.currentUploadAbortController.abort();
-            this.currentUploadAbortController = null;
-        }
-
-        setTimeout(() => {
-            this.updateFileInfo('', 0);
-            this.showLoader(false);
-            this.elements.fileUpload.value = '';
-        }, 1000);
     }
 
     // ==================== ВСПОМОГАТЕЛЬНЫЕ МЕТОДЫ ====================
